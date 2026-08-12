@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>◈ CAMPUS BYTE · INSCRIPCIÓN</title>
+  <style>
+    /* ===== RESET Y FUENTE PIXEL ===== */
+    @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0c0f0c;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Press Start 2P', monospace;
+      padding: 1.5rem;
+      background-image: 
+        linear-gradient(rgba(10, 20, 10, 0.7), rgba(10, 20, 10, 0.9)),
+        repeating-linear-gradient(0deg, #1f3f1f 0px, #1f3f1f 2px, #0c0f0c 2px, #0c0f0c 6px);
+      image-rendering: pixelated;
+    }
+
+    /* ===== CARTEL MATRIX ===== */
+    .matrix-panel {
+      max-width: 820px;
+      width: 100%;
+      background: #0f1a0f;
+      border: 4px solid #33ff33;
+      box-shadow: 0 0 30px #33ff3350, inset 0 0 20px #33ff3315;
+      padding: 2.2rem 2rem;
+      border-radius: 18px;
+      backdrop-filter: blur(1px);
+      transition: 0.25s;
+      image-rendering: pixelated;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      text-align: center;
+      color: #b0ffb0;
+      text-shadow: 0 0 8px #33ff33, 0 0 18px #33ff33aa;
+      margin-bottom: 0.3rem;
+      word-break: break-word;
+    }
+
+    .subhead {
+      text-align: center;
+      color: #6f9f6f;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      margin-bottom: 2.2rem;
+      border-bottom: 2px dashed #2f5f2f;
+      padding-bottom: 0.8rem;
+    }
+
+    /* ===== PREGUNTAS ===== */
+    .field {
+      margin-bottom: 2.2rem;
+      border-left: 3px solid #33ff3360;
+      padding-left: 1.2rem;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.8rem;
+      color: #b6fbb6;
+      text-shadow: 0 0 5px #33ff3370;
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+
+    /* opciones tipo radio / check */
+    .options-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 1.8rem;
+      align-items: center;
+    }
+
+    .opt-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #b0e0b0;
+      font-size: 0.65rem;
+      cursor: pointer;
+      transition: 0.1s;
+      background: #162016;
+      padding: 0.45rem 0.9rem 0.45rem 0.6rem;
+      border: 2px solid #2f5f2f;
+      border-radius: 40px;
+      box-shadow: inset 0 0 8px #0f1f0f;
+    }
+
+    .opt-item:hover {
+      background: #1e3a1e;
+      border-color: #55ff55;
+      box-shadow: 0 0 12px #33ff3340;
+    }
+
+    .opt-item input[type="radio"],
+    .opt-item input[type="checkbox"] {
+      accent-color: #33ff33;
+      width: 18px;
+      height: 18px;
+      filter: drop-shadow(0 0 4px #33ff33);
+      cursor: pointer;
+    }
+
+    .opt-item img {
+      width: 28px;
+      height: 28px;
+      image-rendering: pixelated;
+      margin-left: 4px;
+      filter: drop-shadow(0 0 6px #33ff3380);
+    }
+
+    .opt-item.selected {
+      background: #1f3f1f;
+      border-color: #77ff77;
+      box-shadow: 0 0 20px #33ff3370, inset 0 0 12px #33ff3330;
+    }
+
+    .input-text {
+      background: #0f1a0f;
+      border: 2px solid #2f5f2f;
+      color: #bbffbb;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      padding: 0.6rem 1rem;
+      width: 100%;
+      max-width: 260px;
+      border-radius: 30px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .input-text:focus {
+      border-color: #55ff55;
+      box-shadow: 0 0 16px #33ff3360;
+      background: #142014;
+    }
+
+    .input-text::placeholder {
+      color: #3f6f3f;
+      font-size: 0.55rem;
+    }
+
+    .field-otros {
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .otros-hidden {
+      display: none;
+    }
+
+    .otros-visible {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    /* ===== BOTONES ===== */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.2rem;
+      margin-top: 1.8rem;
+      border-top: 2px solid #2f5f2f;
+      padding-top: 1.8rem;
+    }
+
+    .btn {
+      font-family: 'Press Start 2P', monospace;
+      background: #1f331f;
+      border: 3px solid #33ff33;
+      color: #bbffbb;
+      padding: 0.8rem 1.4rem;
+      font-size: 0.7rem;
+      border-radius: 60px;
+      cursor: pointer;
+      box-shadow: 0 0 12px #33ff3340;
+      transition: 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      background: #33ff33;
+      color: #0f1f0f;
+      box-shadow: 0 0 30px #33ff33aa;
+      border-color: #bbffbb;
+      transform: scale(0.96);
+    }
+
+    .btn:active {
+      transform: scale(0.92);
+    }
+
+    .btn-export {
+      background: #0f2f1f;
+      border-color: #88ff88;
+    }
+
+    .btn-export:hover {
+      background: #88ff88;
+      color: #0a1a0a;
+    }
+
+    /* ===== AVISO ===== */
+    .status-message {
+      margin-top: 1.4rem;
+      font-size: 0.6rem;
+      color: #7fbf7f;
+      text-align: center;
+      min-height: 2.2rem;
+      border: 1px dashed #2f5f2f;
+      padding: 0.6rem;
+      background: #0f1a0f70;
+    }
+
+    /* responsive */
+    @media (max-width: 580px) {
+      .matrix-panel { padding: 1.2rem; }
+      h1 { font-size: 1.2rem; }
+      .opt-item { font-size: 0.55rem; padding: 0.3rem 0.7rem; }
+      .btn { font-size: 0.55rem; padding: 0.6rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="matrix-panel" id="app">
+    <h1>⧩ CAMPUS BYTE ⧩</h1>
+    <div class="subhead">// INSCRIPCIÓN · TORNEO DEV //</div>
+
+    <!-- NIVEL -->
+    <div class="field">
+      <span class="field-label">⏣ NIVEL DE CURSO</span>
+      <div class="options-grid" id="nivelGroup">
+        <label class="opt-item" data-value="1 medio">
+          <input type="radio" name="nivel" value="1 medio"> 1 medio
+        </label>
+        <label class="opt-item" data-value="2 medio">
+          <input type="radio" name="nivel" value="2 medio"> 2 medio
+        </label>
+        <label class="opt-item" data-value="3 medio">
+          <input type="radio" name="nivel" value="3 medio"> 3 medio
+        </label>
+        <label class="opt-item" data-value="4 medio">
+          <input type="radio" name="nivel" value="4 medio"> 4 medio
+        </label>
+      </div>
+    </div>
+
+    <!-- EDAD -->
+    <div class="field">
+      <span class="field-label">⏣ EDAD (años)</span>
+      <input type="text" class="input-text" id="edadInput" placeholder="EJ: 17" maxlength="3">
+    </div>
+
+    <!-- TIPO JUEGO -->
+    <div class="field">
+      <span class="field-label">⏣ GÉNERO DE JUEGO FAV</span>
+      <div class="options-grid" id="gameGroup">
+        <label class="opt-item" data-value="Battle Royal">
+          <input type="radio" name="genero" value="Battle Royal"> Battle Royal
+          <img src="https://www.pngall.com/wp-content/uploads/2016/06/Mario-PNG-Image.png" alt="mario">
+        </label>
+        <label class="opt-item" data-value="Combate">
+          <input type="radio" name="genero" value="Combate"> Combate
+          <img src="https://www.pngall.com/wp-content/uploads/2016/06/Mario-PNG-Image.png" alt="mario">
+        </label>
+        <label class="opt-item" data-value="Carreras">
+          <input type="radio" name="genero" value="Carreras"> Carreras
+          <img src="https://www.pngall.com/wp-content/uploads/2016/06/Mario-PNG-Image.png" alt="mario">
+        </label>
+        <label class="opt-item" data-value="Estrategia">
+          <input type="radio" name="genero" value="Estrategia"> Estrategia
+          <img src="https://www.pngall.com/wp-content/uploads/2016/06/Mario-PNG-Image.png" alt="mario">
+        </label>
+        <label class="opt-item" data-value="Moba">
+          <input type="radio" name="genero" value="Moba"> Moba
+          <img src="https://www.pngall.com/wp-content/uploads/2016/06/Mario-PNG-Image.png" alt="mario">
+        </label>
+        <label class="opt-item" data-value="otros" id="otrosLabel">
+          <input type="radio" name="genero" value="otros" id="otrosRadio"> Otros
+          <img src="https://www.pngall.com/wp-content/uploads/2016/06/Mario-PNG-Image.png" alt="mario">
+        </label>
+      </div>
+      <!-- campo otros -->
+      <div class="field-otros" id="otrosContainer">
+        <span style="color:#8fbf8f; font-size:0.55rem;">▸ Especifica:</span>
+        <input type="text" class="input-text" id="otrosInput" placeholder="ej: Minecraft" style="max-width:200px;">
+      </div>
+    </div>
+
+    <!-- CATEGORÍA -->
+    <div class="field">
+      <span class="field-label">⏣ CATEGORÍA</span>
+      <div class="options-grid" id="categoriaGroup">
+        <label class="opt-item" data-value="Individual">
+          <input type="radio" name="categoria" value="Individual"> Individual
+        </label>
+        <label class="opt-item" data-value="Parejas">
+          <input type="radio" name="categoria" value="Parejas"> Parejas
+        </label>
+        <label class="opt-item" data-value="Grupos">
+          <input type="radio" name="categoria" value="Grupos"> Grupos
+        </label>
+      </div>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="actions">
+      <button class="btn" id="guardarBtn">⏺ GUARDAR</button>
+      <button class="btn btn-export" id="exportarBtn">⏏ EXPORTAR JSON</button>
+    </div>
+
+    <div class="status-message" id="statusMsg">>_ sistema listo · selecciona opciones</div>
+  </div>
+
+  <script>
+    (function() {
+      "use strict";
+
+      // ----- REFERENCIAS -----
+      const statusMsg = document.getElementById('statusMsg');
+      
+      // grupos de opciones (para el highlight con mario)
+      const nivelLabels = document.querySelectorAll('#nivelGroup .opt-item');
+      const gameLabels = document.querySelectorAll('#gameGroup .opt-item');
+      const categoriaLabels = document.querySelectorAll('#categoriaGroup .opt-item');
+
+      // inputs
+      const edadInput = document.getElementById('edadInput');
+      const otrosInput = document.getElementById('otrosInput');
+      const otrosRadio = document.getElementById('otrosRadio');
+      const otrosContainer = document.getElementById('otrosContainer');
+
+      // botones
+      const guardarBtn = document.getElementById('guardarBtn');
+      const exportarBtn = document.getElementById('exportarBtn');
+
+      // ----- UTILS: resaltar con mario (PNG) -----
+      function applyMarioHighlight(selectedLabel) {
+        // quita clase selected e img de todos los de su grupo
+        const parentGroup = selectedLabel.closest('.options-grid');
+        if (!parentGroup) return;
+        const siblings = parentGroup.querySelectorAll('.opt-item');
+        siblings.forEach(lbl => {
+          lbl.classList.remove('selected');
+          // remover img extra (solo dejamos la que ya tiene cada label)
+          // pero nosotros añadimos una img al final, mejor manejamos con data
+          // como ya tienen una img, no duplicamos. 
+        });
+        // añadir clase a la seleccionada
+        selectedLabel.classList.add('selected');
+        // Aseguramos que la imagen mario se muestre (ya existe en cada label)
+        // Solo por efecto visual, la clase selected tiene box-shadow extra.
+      }
+
+      // escucha cambios en radio buttons para resaltar
+      document.querySelectorAll('.opt-item input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function(e) {
+          const label = this.closest('.opt-item');
+          if (!label) return;
+          // Desmarcar todos en el grupo
+          const group = label.closest('.options-grid');
+          if (group) {
+            group.querySelectorAll('.opt-item').forEach(l => l.classList.remove('selected'));
+          }
+          if (this.checked) {
+            label.classList.add('selected');
+            // si es "otros" mostrar campo
+            if (this.value === 'otros') {
+              otrosContainer.style.display = 'flex';
+            } else {
+              otrosContainer.style.display = 'none';
+            }
+          }
+        });
+      });
+
+      // inicialmente ocultar otros
+      otrosContainer.style.display = 'none';
+
+      // si se selecciona otros manualmente, mostrar
+      otrosRadio.addEventListener('change', function() {
+        if (this.checked) {
+          otrosContainer.style.display = 'flex';
+        } else {
+          otrosContainer.style.display = 'none';
+        }
+      });
+
+      // ----- GUARDAR (en carpeta usuarios/ JSON) -----
+      function guardarDatos() {
+        // recolectar
+        const nivel = document.querySelector('input[name="nivel"]:checked');
+        const genero = document.querySelector('input[name="genero"]:checked');
+        const categoria = document.querySelector('input[name="categoria"]:checked');
+        const edad = edadInput.value.trim();
+
+        if (!nivel) { statusMsg.innerText = '⚠ SELECCIONA UN NIVEL'; return; }
+        if (!genero) { statusMsg.innerText = '⚠ SELECCIONA UN GÉNERO'; return; }
+        if (!categoria) { statusMsg.innerText = '⚠ SELECCIONA UNA CATEGORÍA'; return; }
+        if (edad === '') { statusMsg.innerText = '⚠ INGRESA TU EDAD'; return; }
+        if (isNaN(edad) || parseInt(edad) < 6 || parseInt(edad) > 99) {
+          statusMsg.innerText = '⚠ EDAD INVÁLIDA (6-99)';
+          return;
+        }
+
+        let generoVal = genero.value;
+        if (generoVal === 'otros') {
+          const otrosText = otrosInput.value.trim();
+          if (otrosText === '') {
+            statusMsg.innerText = '⚠ ESPECIFICA EL JUEGO EN "OTROS"';
+            return;
+          }
+          generoVal = `otros: ${otrosText}`;
+        }
+
+        const data = {
+          nivel: nivel.value,
+          edad: edad,
+          genero: generoVal,
+          categoria: categoria.value,
+          timestamp: new Date().toISOString()
+        };
+
+        // Guardar en localStorage simulando carpeta "usuarios" (para persistencia)
+        let usuarios = JSON.parse(localStorage.getItem('usuarios_campeonato')) || [];
+        usuarios.push(data);
+        localStorage.setItem('usuarios_campeonato', JSON.stringify(usuarios));
+
+        statusMsg.innerText = `✔ DATOS GUARDADOS · ${usuarios.length} registros`;
+        // limpiar highlights? no, mantenemos seleccion
+        // opcional: limpiar campos? no
+      }
+
+      // ----- EXPORTAR JSON (descarga) -----
+      function exportarEstadisticas() {
+        const usuarios = JSON.parse(localStorage.getItem('usuarios_campeonato')) || [];
+        if (usuarios.length === 0) {
+          statusMsg.innerText = '⛔ NO HAY DATOS PARA EXPORTAR';
+          return;
+        }
+
+        // Estadísticas de selección: conteo por campo
+        const stats = {
+          total: usuarios.length,
+          niveles: {},
+          generos: {},
+          categorias: {},
+          edades: []
+        };
+
+        usuarios.forEach(u => {
+          // niveles
+          stats.niveles[u.nivel] = (stats.niveles[u.nivel] || 0) + 1;
+          // generos
+          stats.generos[u.genero] = (stats.generos[u.genero] || 0) + 1;
+          // categorias
+          stats.categorias[u.categoria] = (stats.categorias[u.categoria] || 0) + 1;
+          // edades (para promedio opcional)
+          stats.edades.push(parseInt(u.edad));
+        });
+
+        // agregar promedio edad
+        const sumEdad = stats.edades.reduce((a,b) => a+b, 0);
+        stats.promedioEdad = (stats.edades.length > 0) ? (sumEdad / stats.edades.length).toFixed(1) : 0;
+
+        // exportar como JSON
+        const blob = new Blob([JSON.stringify(stats, null, 2)], { type: 'application/json' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `stats_campeonato_${new Date().toISOString().slice(0,10)}.json`;
+        link.click();
+        URL.revokeObjectURL(link.href);
+
+        statusMsg.innerText = `📤 EXPORTADO · ${usuarios.length} registros`;
+      }
+
+      // ----- EVENTOS BOTONES -----
+      guardarBtn.addEventListener('click', guardarDatos);
+      exportarBtn.addEventListener('click', exportarEstadisticas);
+
+      // al cargar, si hay datos previos, mostrar conteo
+      window.addEventListener('load', function() {
+        const usuarios = JSON.parse(localStorage.getItem('usuarios_campeonato')) || [];
+        if (usuarios.length > 0) {
+          statusMsg.innerText = `🟢 ${usuarios.length} registros guardados`;
+        }
+        // precargar "otros" si ya estaba marcado? no necesario
+      });
+
+      // Para que el label "otros" tenga la imagen mario, ya la tiene.
+      // Asegurar que el campo otros se oculta si se deselecciona.
+      // adicional: cuando se hace click en otro radio, ocultar otros
+      document.querySelectorAll('input[name="genero"]').forEach(r => {
+        r.addEventListener('change', function() {
+          if (this.value !== 'otros') {
+            otrosContainer.style.display = 'none';
+          } else {
+            otrosContainer.style.display = 'flex';
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>
