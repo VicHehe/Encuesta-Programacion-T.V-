@@ -46,8 +46,8 @@
     }
     /* Logo más grande */
     .logo-container {
-      width: 240px;
-      height: 135px;
+      width: 320px;
+      height: 180px;
       flex-shrink: 0;
       overflow: hidden;
       border-radius: 14px;
@@ -142,21 +142,28 @@
       margin-top: 1.5rem;
       display: none;
     }
+
+    /* Tarjetas de estadísticas mejoradas */
     .stats-summary {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 0.8rem;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
       margin-bottom: 1.5rem;
     }
     .stat-card {
       background: rgba(255,255,255,0.03);
       border-radius: 1rem;
-      padding: 0.8rem 1rem;
+      padding: 1rem 0.8rem;
       text-align: center;
-      border: 1px solid rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: 0.2s;
+    }
+    .stat-card:hover {
+      background: rgba(255,255,255,0.06);
+      transform: translateY(-2px);
     }
     .stat-card .number {
-      font-size: 1.8rem;
+      font-size: 2rem;
       font-weight: 700;
       background: linear-gradient(135deg, #38bdf8, #4ade80);
       -webkit-background-clip: text;
@@ -167,9 +174,14 @@
     .stat-card .label {
       font-size: 0.6rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
       color: #94a3b8;
-      margin-top: 0.2rem;
+      margin-top: 0.3rem;
+    }
+    .stat-card .icon {
+      font-size: 1.5rem;
+      display: block;
+      margin-bottom: 0.2rem;
     }
 
     .charts-grid {
@@ -386,7 +398,7 @@
       .main-container { padding: 1.2rem; }
       .title-group h1 { font-size: 1.3rem; }
       .header { gap: 0.8rem; }
-      .logo-container { width: 160px; height: 90px; }
+      .logo-container { width: 200px; height: 112.5px; }
       .opt-item { font-size: 0.6rem; padding: 0.2rem 0.8rem 0.2rem 0.6rem; }
       .btn { font-size: 0.6rem; padding: 0.4rem 1rem; }
       .admin-panel input[type="password"] { width: 120px; }
@@ -414,7 +426,7 @@
         <div class="chart-box"><h4>Nivel</h4><canvas id="chartNivel"></canvas></div>
         <div class="chart-box"><h4>Género</h4><canvas id="chartGenero"></canvas></div>
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
-        <div class="chart-box"><h4>Edad (promedio)</h4><canvas id="chartEdad"></canvas></div>
+        <div class="chart-box"><h4>Edad más frecuente</h4><canvas id="chartEdad"></canvas></div>
       </div>
       <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNG</button>
     </div>
@@ -423,7 +435,7 @@
   <!-- HEADER -->
   <div class="header">
     <div class="logo-container">
-      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/240x135/1e293b/38bdf8?text=CB'" />
+      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/320x180/1e293b/38bdf8?text=CB'" />
     </div>
     <div class="title-group">
       <h1>CAMPUS BYTE</h1>
@@ -445,7 +457,7 @@
 
     <div class="field">
       <span class="field-label">Edad (años)</span>
-      <input type="text" class="input-text" id="edadInput" placeholder="Ej: 17" maxlength="3" />
+      <input type="text" class="input-text" id="edadInput" placeholder="13 - 24" maxlength="2" />
     </div>
 
     <div class="field">
@@ -594,25 +606,7 @@
     }
 
     // ============================================================
-    // CAPTCHA SIMPLE (restricción adicional)
-    // ============================================================
-    function generarCaptcha() {
-      const a = Math.floor(Math.random() * 10) + 1;
-      const b = Math.floor(Math.random() * 10) + 1;
-      const op = ['+', '-'][Math.floor(Math.random() * 2)];
-      let resultado;
-      if (op === '+') resultado = a + b;
-      else resultado = a - b;
-      // Evitar números negativos para niños
-      if (resultado < 0) {
-        // Si da negativo, cambiar a suma
-        return generarCaptcha(); // recursivo hasta que sea positivo
-      }
-      return { texto: `${a} ${op} ${b} = ?`, resultado };
-    }
-
-    // ============================================================
-    // GUARDAR DATOS (con voto único y captcha)
+    // GUARDAR DATOS (con voto único y edad 13-24)
     // ============================================================
     async function guardarDatos() {
       if (yaVoto()) {
@@ -628,20 +622,10 @@
       if (!nivelEl) { setStatus('⚠ Selecciona un nivel', 'error'); return; }
       if (!generoEl) { setStatus('⚠ Selecciona un género', 'error'); return; }
       if (!categoriaEl) { setStatus('⚠ Selecciona una categoría', 'error'); return; }
-      if (edad === '' || isNaN(edad) || parseInt(edad) < 6 || parseInt(edad) > 99) {
-        setStatus('⚠ Edad inválida (6-99)', 'error');
-        return;
-      }
 
-      // --- CAPTCHA ---
-      const captcha = generarCaptcha();
-      const respuesta = prompt(`Resuelve esta operación para confirmar que eres humano:\n\n${captcha.texto}`);
-      if (respuesta === null) {
-        setStatus('⛔ Cancelaste la operación.', 'error');
-        return;
-      }
-      if (parseInt(respuesta) !== captcha.resultado) {
-        setStatus('❌ Respuesta incorrecta. Intenta de nuevo.', 'error');
+      const edadNum = parseInt(edad);
+      if (edad === '' || isNaN(edadNum) || edadNum < 13 || edadNum > 24) {
+        setStatus('⚠ Edad inválida (debe ser 13-24)', 'error');
         return;
       }
 
@@ -657,7 +641,7 @@
 
       const nuevo = {
         nivel: nivelEl.value,
-        edad: parseInt(edad),
+        edad: edadNum,
         genero: generoVal,
         categoria: categoriaEl.value,
         timestamp: new Date().toISOString()
@@ -684,47 +668,74 @@
     }
 
     // ============================================================
-    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS
+    // FUNCIÓN PARA CALCULAR MODA (valor más frecuente)
+    // ============================================================
+    function calcularModa(arr) {
+      if (!arr || arr.length === 0) return null;
+      const freq = {};
+      let maxCount = 0;
+      let moda = arr[0];
+      arr.forEach(val => {
+        freq[val] = (freq[val] || 0) + 1;
+        if (freq[val] > maxCount) {
+          maxCount = freq[val];
+          moda = val;
+        }
+      });
+      return moda;
+    }
+
+    // ============================================================
+    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS (mejorados)
     // ============================================================
     async function cargarAdminStats() {
       try {
         const { data } = await getDataFromRepo();
         if (!data || data.length === 0) {
-          statsSummary.innerHTML = `<div class="stat-card"><div class="number">0</div><div class="label">Registros</div></div>`;
+          statsSummary.innerHTML = `
+            <div class="stat-card"><span class="icon">📊</span><div class="number">0</div><div class="label">Total votos</div></div>
+            <div class="stat-card"><span class="icon">🎯</span><div class="number">—</div><div class="label">Edad más frecuente</div></div>
+            <div class="stat-card"><span class="icon">📚</span><div class="number">0</div><div class="label">Niveles distintos</div></div>
+            <div class="stat-card"><span class="icon">🎮</span><div class="number">0</div><div class="label">Géneros distintos</div></div>
+          `;
           destruirGraficos();
           return;
         }
 
         const total = data.length;
         const niveles = {}, generos = {}, categorias = {};
-        let sumaEdad = 0;
+        const edades = [];
         data.forEach(u => {
           niveles[u.nivel] = (niveles[u.nivel] || 0) + 1;
           generos[u.genero] = (generos[u.genero] || 0) + 1;
           categorias[u.categoria] = (categorias[u.categoria] || 0) + 1;
-          sumaEdad += u.edad;
+          edades.push(u.edad);
         });
-        const promedioEdad = (sumaEdad / total).toFixed(1);
 
+        const modaEdad = calcularModa(edades);
+
+        // Tarjetas con iconos y texto más claro
         statsSummary.innerHTML = `
-          <div class="stat-card"><div class="number">${total}</div><div class="label">Registros</div></div>
-          <div class="stat-card"><div class="number">${promedioEdad}</div><div class="label">Edad promedio</div></div>
-          <div class="stat-card"><div class="number">${Object.keys(niveles).length}</div><div class="label">Niveles</div></div>
-          <div class="stat-card"><div class="number">${Object.keys(generos).length}</div><div class="label">Géneros</div></div>
+          <div class="stat-card"><span class="icon">📊</span><div class="number">${total}</div><div class="label">Total votos</div></div>
+          <div class="stat-card"><span class="icon">🎯</span><div class="number">${modaEdad !== null ? modaEdad : '—'}</div><div class="label">Edad más frecuente</div></div>
+          <div class="stat-card"><span class="icon">📚</span><div class="number">${Object.keys(niveles).length}</div><div class="label">Niveles distintos</div></div>
+          <div class="stat-card"><span class="icon">🎮</span><div class="number">${Object.keys(generos).length}</div><div class="label">Géneros distintos</div></div>
         `;
 
         destruirGraficos();
 
+        // Gráfico de Nivel
         const ctxNivel = document.getElementById('chartNivel').getContext('2d');
         chartNivel = new Chart(ctxNivel, {
           type: 'bar',
           data: {
             labels: Object.keys(niveles),
-            datasets: [{ label: 'Cantidad', data: Object.values(niveles), backgroundColor: '#38bdf8', borderRadius: 6 }]
+            datasets: [{ label: 'Votos', data: Object.values(niveles), backgroundColor: '#38bdf8', borderRadius: 6 }]
           },
           options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
 
+        // Gráfico de Género (doughnut)
         const ctxGenero = document.getElementById('chartGenero').getContext('2d');
         const colores = ['#4ade80', '#38bdf8', '#facc15', '#f472b6', '#a78bfa', '#fb923c'];
         chartGenero = new Chart(ctxGenero, {
@@ -736,29 +747,42 @@
           options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
         });
 
+        // Gráfico de Categoría (barra horizontal)
         const ctxCategoria = document.getElementById('chartCategoria').getContext('2d');
         chartCategoria = new Chart(ctxCategoria, {
           type: 'bar',
           data: {
             labels: Object.keys(categorias),
-            datasets: [{ label: 'Cantidad', data: Object.values(categorias), backgroundColor: '#facc15', borderRadius: 6 }]
+            datasets: [{ label: 'Votos', data: Object.values(categorias), backgroundColor: '#facc15', borderRadius: 6 }]
           },
           options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
 
+        // Gráfico de Edad más frecuente (barra simple)
         const ctxEdad = document.getElementById('chartEdad').getContext('2d');
-        chartEdad = new Chart(ctxEdad, {
-          type: 'bar',
-          data: {
-            labels: ['Edad promedio'],
-            datasets: [{ label: 'Años', data: [parseFloat(promedioEdad)], backgroundColor: '#4ade80', borderRadius: 6 }]
-          },
-          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 20 } } }
-        });
+        if (modaEdad !== null) {
+          chartEdad = new Chart(ctxEdad, {
+            type: 'bar',
+            data: {
+              labels: ['Edad más frecuente'],
+              datasets: [{ label: 'Años', data: [modaEdad], backgroundColor: '#4ade80', borderRadius: 6 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 25 } } }
+          });
+        } else {
+          chartEdad = new Chart(ctxEdad, {
+            type: 'bar',
+            data: {
+              labels: ['Sin datos'],
+              datasets: [{ label: 'Años', data: [0], backgroundColor: '#4ade80', borderRadius: 6 }]
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 25 } } }
+          });
+        }
 
       } catch (e) {
         console.error('Error al cargar estadísticas:', e);
-        statsSummary.innerHTML = `<div class="stat-card"><div class="number">⚠</div><div class="label">Error</div></div>`;
+        statsSummary.innerHTML = `<div class="stat-card"><span class="icon">⚠</span><div class="number">Error</div><div class="label">Intenta de nuevo</div></div>`;
       }
     }
 
@@ -774,7 +798,7 @@
     // ============================================================
     async function exportarPNG() {
       const statsText = statsSummary.innerText;
-      if (statsText.includes('0') && statsText.includes('Registros')) {
+      if (statsText.includes('0') && statsText.includes('Total votos')) {
         setStatus('⛔ No hay datos para exportar. Guarda al menos una respuesta.', 'error');
         return;
       }
@@ -822,7 +846,6 @@
     // ============================================================
     let secuencia = '';
     document.addEventListener('keydown', function(e) {
-      // Solo si no está en un input o textarea
       const tag = e.target.tagName.toLowerCase();
       if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
 
