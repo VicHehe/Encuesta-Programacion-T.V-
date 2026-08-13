@@ -44,7 +44,6 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-wrap: wrap;
     }
-    /* Logo más grande */
     .logo-container {
       width: 200px;
       height: 112.5px;
@@ -79,7 +78,6 @@
       -webkit-text-fill-color: #94a3b8;
     }
 
-    /* ADMIN TOGGLE - siempre visible */
     .admin-toggle {
       text-align: right;
       margin-bottom: 1rem;
@@ -241,7 +239,6 @@
       transform: scale(0.96);
     }
 
-    /* ===== FORMULARIO ===== */
     .form-wrapper {
       transition: all 0.3s ease;
     }
@@ -421,12 +418,10 @@
 
 <div class="main-container" id="app">
 
-  <!-- ADMIN TOGGLE (siempre visible) -->
   <div class="admin-toggle">
     <button id="adminToggleBtn">🔐 ADMIN</button>
   </div>
 
-  <!-- PANEL ADMIN -->
   <div class="admin-panel" id="adminPanel">
     <div class="login-row">
       <label>
@@ -443,12 +438,10 @@
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
         <div class="chart-box"><h4>Edad (promedio)</h4><canvas id="chartEdad"></canvas></div>
       </div>
-      <!-- Botón exportar (se oculta en la captura) -->
       <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNG</button>
     </div>
   </div>
 
-  <!-- HEADER -->
   <div class="header">
     <div class="logo-container">
       <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/200x112/1e293b/38bdf8?text=CB'" />
@@ -459,7 +452,6 @@
     </div>
   </div>
 
-  <!-- FORMULARIO + MENSAJE DE AGRADECIMIENTO -->
   <div id="formWrapper" class="form-wrapper">
     <div class="field">
       <span class="field-label">Nivel de curso</span>
@@ -506,7 +498,6 @@
     </div>
   </div>
 
-  <!-- Mensaje de agradecimiento (oculto por defecto) -->
   <div class="gracias-msg" id="graciasMsg">🎮 ¡Gracias por votar! Tu opinión ha sido registrada.</div>
 
   <div class="status-message" id="statusMsg">>_ Sistema listo · selecciona opciones</div>
@@ -571,11 +562,9 @@
       localStorage.setItem(CLAVE_VOTO, 'true');
     }
 
-    // Si ya votó, ocultar formulario y mostrar mensaje
     if (yaVoto()) {
       formWrapper.classList.add('votado');
       graciasMsg.classList.add('show');
-      // Ocultar también el mensaje de estado (opcional)
       statusMsg.textContent = '✅ Ya has votado anteriormente. ¡Gracias!';
       statusMsg.className = 'status-message success';
     }
@@ -628,7 +617,7 @@
     // INICIALIZAR CONTADOR
     // ============================================================
     async function actualizarContador() {
-      if (yaVoto()) return; // si ya votó, no molestar
+      if (yaVoto()) return;
       try {
         const { data } = await getDataFromRepo();
         if (data && data.length > 0) {
@@ -644,10 +633,9 @@
     actualizarContador();
 
     // ============================================================
-    // GUARDAR DATOS (con voto único)
+    // GUARDAR DATOS
     // ============================================================
     async function guardarDatos() {
-      // Si ya votó, no permitir guardar de nuevo
       if (yaVoto()) {
         setStatus('⚠ Ya has votado anteriormente.', 'error');
         return;
@@ -690,15 +678,11 @@
         nuevosDatos.push(nuevo);
         await saveDataToRepo(nuevosDatos, sha);
 
-        // Marcar voto en localStorage
         marcarVoto();
-
-        // Ocultar formulario y mostrar mensaje de agradecimiento
         formWrapper.classList.add('votado');
         graciasMsg.classList.add('show');
         setStatus('✅ ¡Gracias por votar! Tu respuesta ha sido guardada.', 'success');
 
-        // Actualizar contador si el admin está abierto
         if (adminPanel.classList.contains('open') && adminContent.style.display === 'block') {
           cargarAdminStats();
         }
@@ -804,36 +788,31 @@
         return;
       }
 
-      // Clonar el contenido del adminContent pero removiendo el botón de exportar
-      const original = document.getElementById('adminContent');
-      const clon = original.cloneNode(true);
-      // Eliminar el botón de exportar del clon
-      const btnExport = clon.querySelector('#exportPngBtn');
-      if (btnExport) btnExport.remove();
-
-      // Crear un contenedor temporal invisible para renderizar el clon
-      const tempDiv = document.createElement('div');
-      tempDiv.style.position = 'absolute';
-      tempDiv.style.left = '-9999px';
-      tempDiv.style.top = '0';
-      tempDiv.style.width = original.scrollWidth + 'px';
-      tempDiv.style.backgroundColor = '#0f172a';
-      tempDiv.appendChild(clon);
-      document.body.appendChild(tempDiv);
+      const adminContentEl = document.getElementById('adminContent');
+      const btnExport = document.getElementById('exportPngBtn');
+      if (!adminContentEl || !btnExport) {
+        setStatus('⛔ Error: no se encontró el contenido del panel admin.', 'error');
+        return;
+      }
 
       try {
         setStatus('📸 Capturando imagen...', '');
+        // Ocultar el botón temporalmente
+        btnExport.style.display = 'none';
         await new Promise(r => setTimeout(r, 300));
 
-        const canvas = await html2canvas(tempDiv, {
+        const canvas = await html2canvas(adminContentEl, {
           scale: 2,
           useCORS: true,
           backgroundColor: '#0f172a',
           logging: false,
           allowTaint: false,
-          width: original.scrollWidth,
-          height: original.scrollHeight
+          width: adminContentEl.scrollWidth,
+          height: adminContentEl.scrollHeight
         });
+
+        // Volver a mostrar el botón
+        btnExport.style.display = '';
 
         const imgData = canvas.toDataURL('image/png');
         const link = document.createElement('a');
@@ -845,8 +824,8 @@
       } catch (e) {
         console.error(e);
         setStatus('⛔ Error al exportar PNG: ' + e.message, 'error');
-      } finally {
-        document.body.removeChild(tempDiv);
+        // Asegurarse de mostrar el botón en caso de error
+        btnExport.style.display = '';
       }
     }
 
