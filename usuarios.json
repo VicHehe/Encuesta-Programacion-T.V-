@@ -89,5 +89,12 @@
     "genero": "Combate",
     "categoria": "Individual",
     "timestamp": "2026-08-13T15:08:45.491Z"
+  },
+  {
+    "nivel": "4 medio",
+    "edad": 18,
+    "genero": "Carreras",
+    "categoria": "Individual",
+    "timestamp": "2026-08-13T15:09:32.807Z"
   }
 ]
