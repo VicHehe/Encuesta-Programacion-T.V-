@@ -430,6 +430,7 @@
         <div class="chart-box"><h4>Género</h4><canvas id="chartGenero"></canvas></div>
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
         <div class="chart-box"><h4>Edad más frecuente</h4><canvas id="chartEdad"></canvas></div>
+        <div class="chart-box"><h4>Deporte</h4><canvas id="chartDeporte"></canvas></div>
       </div>
       <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNG</button>
     </div>
@@ -488,6 +489,23 @@
       </div>
     </div>
 
+    <!-- ===== NUEVO APARTADO "DEPORTE" ===== -->
+    <div class="field">
+      <span class="field-label">Deporte favorito</span>
+      <div class="options-grid" id="deporteGroup">
+        <label class="opt-item" data-value="Fútbol"><input type="radio" name="deporte" value="Fútbol" /> Fútbol <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Baloncesto"><input type="radio" name="deporte" value="Baloncesto" /> Baloncesto <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Voleibol"><input type="radio" name="deporte" value="Voleibol" /> Voleibol <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Tenis"><input type="radio" name="deporte" value="Tenis" /> Tenis <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Natación"><input type="radio" name="deporte" value="Natación" /> Natación <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="otrosDeporte" id="deporteOtrosLabel"><input type="radio" name="deporte" value="otrosDeporte" id="deporteOtrosRadio" /> Otros <img src="mario.png" onerror="this.style.display='none'" /></label>
+      </div>
+      <div class="field-otros" id="deporteOtrosContainer">
+        <span class="label-otros">▸ Especifica:</span>
+        <input type="text" class="input-text" id="deporteOtrosInput" placeholder="ej: Atletismo" style="max-width:200px;" />
+      </div>
+    </div>
+
     <div class="actions">
       <button class="btn btn-primary" id="guardarBtn">⏺ Guardar</button>
     </div>
@@ -536,20 +554,23 @@
     const nivelGroup = document.getElementById('nivelGroup');
     const gameGroup = document.getElementById('gameGroup');
     const categoriaGroup = document.getElementById('categoriaGroup');
+    const deporteGroup = document.getElementById('deporteGroup');
     const edadInput = document.getElementById('edadInput');
     const otrosInput = document.getElementById('otrosInput');
     const otrosRadio = document.getElementById('otrosRadio');
     const otrosContainer = document.getElementById('otrosContainer');
+    const deporteOtrosInput = document.getElementById('deporteOtrosInput');
+    const deporteOtrosRadio = document.getElementById('deporteOtrosRadio');
+    const deporteOtrosContainer = document.getElementById('deporteOtrosContainer');
     const guardarBtn = document.getElementById('guardarBtn');
 
-    let chartNivel, chartGenero, chartCategoria, chartEdad;
+    let chartNivel, chartGenero, chartCategoria, chartEdad, chartDeporte;
 
     // ============================================================
     // DETECCIÓN DE MODO INCOGNITO / PRIVADO
     // ============================================================
     function detectarModoPrivado() {
       return new Promise((resolve) => {
-        // Primero probar localStorage
         let localStorageOk = true;
         try {
           localStorage.setItem('__test__', 'test');
@@ -563,7 +584,6 @@
           return;
         }
 
-        // Luego probar IndexedDB (falla en Safari y Firefox en modo privado)
         try {
           const request = indexedDB.open('__test__');
           request.onerror = () => resolve(true);
@@ -595,16 +615,13 @@
     // ============================================================
     detectarModoPrivado().then(privado => {
       if (privado) {
-        // Ocultar formulario y mostrar mensaje de error
         formWrapper.style.display = 'none';
         graciasMsg.textContent = '⛔ Modo incógnito detectado. No puedes votar.';
         graciasMsg.className = 'gracias-msg show error';
         statusMsg.textContent = '⛔ Modo incógnito no permitido.';
         statusMsg.className = 'status-message error';
-        // Desactivar botón guardar (por si acaso)
         guardarBtn.disabled = true;
       } else {
-        // Si ya votó, ocultar formulario y mostrar gracias
         if (yaVoto()) {
           formWrapper.classList.add('votado');
           graciasMsg.textContent = '🎮 ¡Gracias por votar! Tu opinión ha sido registrada.';
@@ -612,11 +629,9 @@
           statusMsg.textContent = '✅ Ya has votado anteriormente. ¡Gracias!';
           statusMsg.className = 'status-message success';
         } else {
-          // Normal: mostrar formulario
           statusMsg.textContent = '>_ Sistema listo';
           statusMsg.className = 'status-message';
         }
-        // Asegurar que el botón guardar esté habilitado (por si acaso)
         guardarBtn.disabled = false;
       }
     });
@@ -666,7 +681,7 @@
     }
 
     // ============================================================
-    // GUARDAR DATOS (con voto único y edad 13-24)
+    // GUARDAR DATOS (con voto único, edad 13-24 y deporte)
     // ============================================================
     async function guardarDatos() {
       if (yaVoto()) {
@@ -677,11 +692,13 @@
       const nivelEl = document.querySelector('input[name="nivel"]:checked');
       const generoEl = document.querySelector('input[name="genero"]:checked');
       const categoriaEl = document.querySelector('input[name="categoria"]:checked');
+      const deporteEl = document.querySelector('input[name="deporte"]:checked');
       const edad = edadInput.value.trim();
 
       if (!nivelEl) { setStatus('⚠ Selecciona un nivel', 'error'); return; }
       if (!generoEl) { setStatus('⚠ Selecciona un género', 'error'); return; }
       if (!categoriaEl) { setStatus('⚠ Selecciona una categoría', 'error'); return; }
+      if (!deporteEl) { setStatus('⚠ Selecciona un deporte', 'error'); return; }
 
       const edadNum = parseInt(edad);
       if (edad === '' || isNaN(edadNum) || edadNum < 13 || edadNum > 24) {
@@ -699,11 +716,22 @@
         generoVal = `otros: ${otrosText}`;
       }
 
+      let deporteVal = deporteEl.value;
+      if (deporteVal === 'otrosDeporte') {
+        const otrosText = deporteOtrosInput.value.trim();
+        if (otrosText === '') {
+          setStatus('⚠ Especifica el deporte en "Otros"', 'error');
+          return;
+        }
+        deporteVal = `otros: ${otrosText}`;
+      }
+
       const nuevo = {
         nivel: nivelEl.value,
         edad: edadNum,
         genero: generoVal,
         categoria: categoriaEl.value,
+        deporte: deporteVal,
         timestamp: new Date().toISOString()
       };
 
@@ -747,7 +775,7 @@
     }
 
     // ============================================================
-    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS
+    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS (con deporte)
     // ============================================================
     async function cargarAdminStats() {
       try {
@@ -758,18 +786,20 @@
             <div class="stat-card"><span class="icon">🎯</span><div class="number">—</div><div class="label">Edad más frecuente</div></div>
             <div class="stat-card"><span class="icon">📚</span><div class="number">0</div><div class="label">Niveles distintos</div></div>
             <div class="stat-card"><span class="icon">🎮</span><div class="number">0</div><div class="label">Géneros distintos</div></div>
+            <div class="stat-card"><span class="icon">⚽</span><div class="number">0</div><div class="label">Deportes distintos</div></div>
           `;
           destruirGraficos();
           return;
         }
 
         const total = data.length;
-        const niveles = {}, generos = {}, categorias = {};
+        const niveles = {}, generos = {}, categorias = {}, deportes = {};
         const edades = [];
         data.forEach(u => {
           niveles[u.nivel] = (niveles[u.nivel] || 0) + 1;
           generos[u.genero] = (generos[u.genero] || 0) + 1;
           categorias[u.categoria] = (categorias[u.categoria] || 0) + 1;
+          deportes[u.deporte] = (deportes[u.deporte] || 0) + 1;
           edades.push(u.edad);
         });
 
@@ -780,6 +810,7 @@
           <div class="stat-card"><span class="icon">🎯</span><div class="number">${modaEdad !== null ? modaEdad : '—'}</div><div class="label">Edad más frecuente</div></div>
           <div class="stat-card"><span class="icon">📚</span><div class="number">${Object.keys(niveles).length}</div><div class="label">Niveles distintos</div></div>
           <div class="stat-card"><span class="icon">🎮</span><div class="number">${Object.keys(generos).length}</div><div class="label">Géneros distintos</div></div>
+          <div class="stat-card"><span class="icon">⚽</span><div class="number">${Object.keys(deportes).length}</div><div class="label">Deportes distintos</div></div>
         `;
 
         destruirGraficos();
@@ -840,6 +871,18 @@
           });
         }
 
+        // Gráfico de Deporte (doughnut)
+        const ctxDeporte = document.getElementById('chartDeporte').getContext('2d');
+        const coloresDeporte = ['#60a5fa', '#34d399', '#fbbf24', '#f472b6', '#a78bfa', '#fb923c', '#f87171'];
+        chartDeporte = new Chart(ctxDeporte, {
+          type: 'doughnut',
+          data: {
+            labels: Object.keys(deportes),
+            datasets: [{ data: Object.values(deportes), backgroundColor: coloresDeporte.slice(0, Object.keys(deportes).length), borderWidth: 0 }]
+          },
+          options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
+        });
+
       } catch (e) {
         console.error('Error al cargar estadísticas:', e);
         statsSummary.innerHTML = `<div class="stat-card"><span class="icon">⚠</span><div class="number">Error</div><div class="label">Intenta de nuevo</div></div>`;
@@ -851,6 +894,7 @@
       if (chartGenero) { chartGenero.destroy(); chartGenero = null; }
       if (chartCategoria) { chartCategoria.destroy(); chartCategoria = null; }
       if (chartEdad) { chartEdad.destroy(); chartEdad = null; }
+      if (chartDeporte) { chartDeporte.destroy(); chartDeporte = null; }
     }
 
     // ============================================================
@@ -941,9 +985,9 @@
     guardarBtn.addEventListener('click', guardarDatos);
 
     // ============================================================
-    // RESALTAR OPCIONES (estrella)
+    // RESALTAR OPCIONES (estrella) - incluyendo deporte
     // ============================================================
-    function setupRadioHighlight(group) {
+    function setupRadioHighlight(group, otrosContainerEl, otrosRadioEl) {
       const radios = group.querySelectorAll('input[type="radio"]');
       radios.forEach(radio => {
         radio.addEventListener('change', function() {
@@ -953,23 +997,29 @@
           allLabels.forEach(lb => lb.classList.remove('selected'));
           if (this.checked) {
             parentLabel.classList.add('selected');
-            if (this.value === 'otros') {
-              otrosContainer.style.display = 'flex';
-            } else {
-              otrosContainer.style.display = 'none';
+            if (otrosContainerEl && this.value === 'otros' || this.value === 'otrosDeporte') {
+              otrosContainerEl.style.display = 'flex';
+            } else if (otrosContainerEl) {
+              otrosContainerEl.style.display = 'none';
             }
           }
         });
       });
     }
 
-    setupRadioHighlight(nivelGroup);
-    setupRadioHighlight(gameGroup);
-    setupRadioHighlight(categoriaGroup);
+    setupRadioHighlight(nivelGroup, null, null);
+    setupRadioHighlight(gameGroup, otrosContainer, otrosRadio);
+    setupRadioHighlight(categoriaGroup, null, null);
+    setupRadioHighlight(deporteGroup, deporteOtrosContainer, deporteOtrosRadio);
 
     otrosContainer.style.display = 'none';
     otrosRadio.addEventListener('change', function() {
       otrosContainer.style.display = this.checked ? 'flex' : 'none';
+    });
+
+    deporteOtrosContainer.style.display = 'none';
+    deporteOtrosRadio.addEventListener('change', function() {
+      deporteOtrosContainer.style.display = this.checked ? 'flex' : 'none';
     });
 
     function setStatus(msg, type = '') {
