@@ -45,7 +45,6 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-wrap: wrap;
     }
-    /* Contenedor del logo con relación 16:9 */
     .logo-container {
       width: 160px;
       height: 90px;
@@ -281,7 +280,6 @@
       background: rgba(56,189,248,0.05);
       border-color: rgba(56,189,248,0.3);
     }
-    /* Ocultar el círculo del radio y mostrar la estrella al seleccionar */
     .opt-item input[type="radio"] {
       display: none;
     }
@@ -734,17 +732,16 @@
     }
 
     // ============================================================
-    // EXPORTAR PDF (usando los gráficos ya generados en adminContent)
+    // EXPORTAR PDF (usando html2canvas + jsPDF directamente)
     // ============================================================
     async function exportarPDF() {
-      // Verificar que hay datos
+      // Verificar que hay datos mostrados (statsSummary tiene contenido)
       const statsText = statsSummary.innerText;
       if (statsText.includes('0') && statsText.includes('Registros')) {
         setStatus('⛔ No hay datos para exportar. Guarda al menos una respuesta.', 'error');
         return;
       }
 
-      // Usar el contenido del panel admin (stats + gráficos) para generar el PDF
       const element = document.getElementById('adminContent');
       if (!element) {
         setStatus('⛔ Error: no se encontró el contenido del panel admin.', 'error');
@@ -752,14 +749,23 @@
       }
 
       try {
-        const opt = {
-          margin: 0.5,
-          filename: 'estadisticas_campeonato.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2, letterRendering: true, useCORS: true, backgroundColor: '#0f172a' },
-          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-        };
-        await html2pdf().set(opt).from(element).save();
+        // Pequeña pausa para asegurar renderizado de gráficos
+        await new Promise(r => setTimeout(r, 300));
+
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#0f172a',
+          logging: false,
+          allowTaint: false
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+        const imgWidth = 190; // ancho en mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
+        pdf.save('estadisticas_campeonato.pdf');
         setStatus('📄 PDF generado y descargado', 'success');
       } catch (e) {
         console.error(e);
