@@ -44,9 +44,10 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-wrap: wrap;
     }
+    /* Logo más grande */
     .logo-container {
-      width: 200px;
-      height: 112.5px;
+      width: 240px;
+      height: 135px;
       flex-shrink: 0;
       overflow: hidden;
       border-radius: 14px;
@@ -78,28 +79,7 @@
       -webkit-text-fill-color: #94a3b8;
     }
 
-    .admin-toggle {
-      text-align: right;
-      margin-bottom: 1rem;
-    }
-    .admin-toggle button {
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #94a3b8;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 500;
-      padding: 0.4rem 1.2rem;
-      border-radius: 40px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .admin-toggle button:hover {
-      background: rgba(56,189,248,0.1);
-      border-color: #38bdf8;
-      color: #e2e8f0;
-    }
-
+    /* ===== PANEL ADMIN (oculto por defecto) ===== */
     .admin-panel {
       background: rgba(15,23,42,0.7);
       backdrop-filter: blur(8px);
@@ -239,6 +219,7 @@
       transform: scale(0.96);
     }
 
+    /* ===== FORMULARIO ===== */
     .form-wrapper {
       transition: all 0.3s ease;
     }
@@ -405,7 +386,7 @@
       .main-container { padding: 1.2rem; }
       .title-group h1 { font-size: 1.3rem; }
       .header { gap: 0.8rem; }
-      .logo-container { width: 140px; height: 78.75px; }
+      .logo-container { width: 160px; height: 90px; }
       .opt-item { font-size: 0.6rem; padding: 0.2rem 0.8rem 0.2rem 0.6rem; }
       .btn { font-size: 0.6rem; padding: 0.4rem 1rem; }
       .admin-panel input[type="password"] { width: 120px; }
@@ -418,10 +399,7 @@
 
 <div class="main-container" id="app">
 
-  <div class="admin-toggle">
-    <button id="adminToggleBtn">🔐 ADMIN</button>
-  </div>
-
+  <!-- PANEL ADMIN (oculto, se abre con el atajo 03082008) -->
   <div class="admin-panel" id="adminPanel">
     <div class="login-row">
       <label>
@@ -442,9 +420,10 @@
     </div>
   </div>
 
+  <!-- HEADER -->
   <div class="header">
     <div class="logo-container">
-      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/200x112/1e293b/38bdf8?text=CB'" />
+      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/240x135/1e293b/38bdf8?text=CB'" />
     </div>
     <div class="title-group">
       <h1>CAMPUS BYTE</h1>
@@ -452,6 +431,7 @@
     </div>
   </div>
 
+  <!-- FORMULARIO + MENSAJE DE AGRADECIMIENTO -->
   <div id="formWrapper" class="form-wrapper">
     <div class="field">
       <span class="field-label">Nivel de curso</span>
@@ -498,9 +478,10 @@
     </div>
   </div>
 
+  <!-- Mensaje de agradecimiento -->
   <div class="gracias-msg" id="graciasMsg">🎮 ¡Gracias por votar! Tu opinión ha sido registrada.</div>
 
-  <div class="status-message" id="statusMsg">>_ Sistema listo · selecciona opciones</div>
+  <div class="status-message" id="statusMsg">>_ Sistema listo</div>
 </div>
 
 <script>
@@ -527,7 +508,6 @@
     // DOM ELEMENTS
     // ============================================================
     const statusMsg = document.getElementById('statusMsg');
-    const adminToggleBtn = document.getElementById('adminToggleBtn');
     const adminPanel = document.getElementById('adminPanel');
     const adminPass = document.getElementById('adminPass');
     const adminLoginBtn = document.getElementById('adminLoginBtn');
@@ -614,26 +594,25 @@
     }
 
     // ============================================================
-    // INICIALIZAR CONTADOR
+    // CAPTCHA SIMPLE (restricción adicional)
     // ============================================================
-    async function actualizarContador() {
-      if (yaVoto()) return;
-      try {
-        const { data } = await getDataFromRepo();
-        if (data && data.length > 0) {
-          setStatus(`🟢 ${data.length} registros guardados`, 'success');
-        } else {
-          setStatus('>_ Sistema listo · selecciona opciones', '');
-        }
-      } catch (e) {
-        setStatus('⚠ No se pudo conectar con el repositorio. Revisa el token.', 'error');
-        console.error(e);
+    function generarCaptcha() {
+      const a = Math.floor(Math.random() * 10) + 1;
+      const b = Math.floor(Math.random() * 10) + 1;
+      const op = ['+', '-'][Math.floor(Math.random() * 2)];
+      let resultado;
+      if (op === '+') resultado = a + b;
+      else resultado = a - b;
+      // Evitar números negativos para niños
+      if (resultado < 0) {
+        // Si da negativo, cambiar a suma
+        return generarCaptcha(); // recursivo hasta que sea positivo
       }
+      return { texto: `${a} ${op} ${b} = ?`, resultado };
     }
-    actualizarContador();
 
     // ============================================================
-    // GUARDAR DATOS
+    // GUARDAR DATOS (con voto único y captcha)
     // ============================================================
     async function guardarDatos() {
       if (yaVoto()) {
@@ -651,6 +630,18 @@
       if (!categoriaEl) { setStatus('⚠ Selecciona una categoría', 'error'); return; }
       if (edad === '' || isNaN(edad) || parseInt(edad) < 6 || parseInt(edad) > 99) {
         setStatus('⚠ Edad inválida (6-99)', 'error');
+        return;
+      }
+
+      // --- CAPTCHA ---
+      const captcha = generarCaptcha();
+      const respuesta = prompt(`Resuelve esta operación para confirmar que eres humano:\n\n${captcha.texto}`);
+      if (respuesta === null) {
+        setStatus('⛔ Cancelaste la operación.', 'error');
+        return;
+      }
+      if (parseInt(respuesta) !== captcha.resultado) {
+        setStatus('❌ Respuesta incorrecta. Intenta de nuevo.', 'error');
         return;
       }
 
@@ -797,7 +788,6 @@
 
       try {
         setStatus('📸 Capturando imagen...', '');
-        // Ocultar el botón temporalmente
         btnExport.style.display = 'none';
         await new Promise(r => setTimeout(r, 300));
 
@@ -811,7 +801,6 @@
           height: adminContentEl.scrollHeight
         });
 
-        // Volver a mostrar el botón
         btnExport.style.display = '';
 
         const imgData = canvas.toDataURL('image/png');
@@ -824,23 +813,36 @@
       } catch (e) {
         console.error(e);
         setStatus('⛔ Error al exportar PNG: ' + e.message, 'error');
-        // Asegurarse de mostrar el botón en caso de error
         btnExport.style.display = '';
       }
     }
 
     // ============================================================
-    // EVENTOS
+    // ADMIN: ATEJO CON TECLADO (03082008)
     // ============================================================
-    adminToggleBtn.addEventListener('click', function() {
-      adminPanel.classList.toggle('open');
-      if (!adminPanel.classList.contains('open')) {
-        adminContent.style.display = 'none';
-        adminPass.value = '';
-        destruirGraficos();
+    let secuencia = '';
+    document.addEventListener('keydown', function(e) {
+      // Solo si no está en un input o textarea
+      const tag = e.target.tagName.toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+
+      secuencia += e.key;
+      if (secuencia.length > 8) secuencia = secuencia.slice(-8);
+      if (secuencia === '03082008') {
+        secuencia = '';
+        adminPanel.classList.toggle('open');
+        if (!adminPanel.classList.contains('open')) {
+          adminContent.style.display = 'none';
+          adminPass.value = '';
+          destruirGraficos();
+        }
+        e.preventDefault();
       }
     });
 
+    // ============================================================
+    // EVENTOS DEL ADMIN
+    // ============================================================
     adminLoginBtn.addEventListener('click', function() {
       if (adminPass.value === '0308') {
         adminContent.style.display = 'block';
