@@ -35,7 +35,10 @@
       padding: 2rem 2.5rem;
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.06);
+      position: relative;
     }
+
+    /* ===== HEADER ===== */
     .header {
       display: flex;
       align-items: center;
@@ -45,11 +48,21 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-wrap: wrap;
     }
+    /* Contenedor del logo con relación 16:9 */
+    .logo-container {
+      width: 160px;
+      height: 90px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border-radius: 14px;
+    }
     .logo-container img {
-      height: 56px;
-      width: auto;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;  /* recorta la imagen para llenar el contenedor sin deformar */
       border-radius: 14px;
       box-shadow: 0 0 20px rgba(56,189,248,0.3);
+      display: block;
     }
     .title-group h1 {
       font-size: 1.8rem;
@@ -70,14 +83,12 @@
       -webkit-text-fill-color: #94a3b8;
     }
 
-    /* ADMIN TOGGLE - oculto por defecto */
-    .admin-toggle {
+    /* ===== BOTÓN ADMIN (siempre visible) ===== */
+    .admin-btn-wrapper {
       text-align: right;
       margin-bottom: 1rem;
-      display: none;
     }
-    .admin-toggle.show { display: block; }
-    .admin-toggle button {
+    .admin-btn-wrapper button {
       background: transparent;
       border: 1px solid rgba(255,255,255,0.1);
       color: #94a3b8;
@@ -89,12 +100,13 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    .admin-toggle button:hover {
+    .admin-btn-wrapper button:hover {
       background: rgba(56,189,248,0.1);
       border-color: #38bdf8;
       color: #e2e8f0;
     }
 
+    /* ===== PANEL ADMIN (solo para contraseña y exportar) ===== */
     .admin-panel {
       background: rgba(15,23,42,0.7);
       backdrop-filter: blur(8px);
@@ -152,69 +164,7 @@
       background: #4ade80;
       transform: scale(0.96);
     }
-
-    #adminContent {
-      margin-top: 1.5rem;
-      display: none;
-    }
-    .stats-summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 0.8rem;
-      margin-bottom: 1.5rem;
-    }
-    .stat-card {
-      background: rgba(255,255,255,0.03);
-      border-radius: 1rem;
-      padding: 0.8rem 1rem;
-      text-align: center;
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-    .stat-card .number {
-      font-size: 1.8rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #38bdf8, #4ade80);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1.2;
-    }
-    .stat-card .label {
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #94a3b8;
-      margin-top: 0.2rem;
-    }
-
-    .charts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin: 1.5rem 0;
-    }
-    .chart-box {
-      background: rgba(255,255,255,0.02);
-      border-radius: 1rem;
-      padding: 1rem;
-      border: 1px solid rgba(255,255,255,0.04);
-    }
-    .chart-box h4 {
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: #94a3b8;
-      text-align: center;
-      margin-bottom: 0.8rem;
-    }
-    .chart-box canvas {
-      max-height: 180px;
-      width: 100% !important;
-      height: auto !important;
-    }
-
-    .btn-pdf {
+    .admin-panel .btn-pdf {
       background: #4ade80;
       border: none;
       color: #0f172a;
@@ -227,13 +177,14 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
     }
-    .btn-pdf:hover {
+    .admin-panel .btn-pdf:hover {
       background: #38bdf8;
       transform: scale(0.96);
     }
 
+    /* ===== FORMULARIO ===== */
     .field {
       margin-bottom: 1.8rem;
       border-left: 3px solid rgba(56,189,248,0.2);
@@ -273,24 +224,24 @@
       background: rgba(56,189,248,0.05);
       border-color: rgba(56,189,248,0.3);
     }
+    /* Ocultar el círculo del radio y mostrar la estrella al seleccionar */
     .opt-item input[type="radio"] {
-      accent-color: #38bdf8;
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
+      display: none;   /* oculta el círculo nativo */
+    }
+    .opt-item img {
+      display: none;   /* estrella oculta por defecto */
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
     }
     .opt-item.selected {
       background: rgba(56,189,248,0.12);
       border-color: #38bdf8;
       box-shadow: 0 0 0 1px #38bdf8;
     }
-    .opt-item img {
-      display: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
+    .opt-item.selected img {
+      display: inline-block;   /* muestra la estrella al seleccionar */
     }
-    .opt-item.selected img { display: inline-block; }
 
     .input-text {
       background: rgba(255,255,255,0.04);
@@ -376,18 +327,18 @@
     .status-message.success { color: #4ade80; border-color: rgba(74,222,128,0.2); }
     .status-message.error { color: #f87171; border-color: rgba(248,113,113,0.2); }
 
+    /* ===== CONTENEDOR OCULTO PARA PDF ===== */
     #pdfContainer { display: none; }
 
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 640px) {
       .main-container { padding: 1.2rem; }
       .title-group h1 { font-size: 1.3rem; }
       .header { gap: 0.8rem; }
-      .logo-container img { height: 40px; }
+      .logo-container { width: 120px; height: 67.5px; }
       .opt-item { font-size: 0.6rem; padding: 0.2rem 0.8rem 0.2rem 0.6rem; }
       .btn { font-size: 0.6rem; padding: 0.4rem 1rem; }
       .admin-panel input[type="password"] { width: 120px; }
-      .charts-grid { grid-template-columns: 1fr; gap: 1rem; }
-      .stats-summary { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -395,12 +346,12 @@
 
 <div class="main-container" id="app">
 
-  <!-- ADMIN TOGGLE (solo visible si ?admin=true) -->
-  <div class="admin-toggle" id="adminToggleWrapper">
+  <!-- BOTÓN ADMIN (siempre visible) -->
+  <div class="admin-btn-wrapper">
     <button id="adminToggleBtn">🔐 ADMIN</button>
   </div>
 
-  <!-- PANEL ADMIN -->
+  <!-- PANEL ADMIN (solo contraseña y exportar PDF) -->
   <div class="admin-panel" id="adminPanel">
     <div class="login-row">
       <label>
@@ -409,14 +360,7 @@
       </label>
       <button class="btn-login" id="adminLoginBtn">Acceder</button>
     </div>
-    <div id="adminContent">
-      <div class="stats-summary" id="statsSummary"></div>
-      <div class="charts-grid" id="chartsGrid">
-        <div class="chart-box"><h4>Nivel</h4><canvas id="chartNivel"></canvas></div>
-        <div class="chart-box"><h4>Género</h4><canvas id="chartGenero"></canvas></div>
-        <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
-        <div class="chart-box"><h4>Edad (promedio)</h4><canvas id="chartEdad"></canvas></div>
-      </div>
+    <div id="adminContent" style="display:none;">
       <button class="btn-pdf" id="exportPdfBtn">📄 Exportar PDF con gráficos</button>
     </div>
   </div>
@@ -424,7 +368,7 @@
   <!-- HEADER -->
   <div class="header">
     <div class="logo-container">
-      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/56x56/1e293b/38bdf8?text=CB'" />
+      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/160x90/1e293b/38bdf8?text=CB'" />
     </div>
     <div class="title-group">
       <h1>CAMPUS BYTE</h1>
@@ -487,7 +431,7 @@
     "use strict";
 
     // ============================================================
-    // CONFIGURACIÓN GITHUB - TOKEN OFUSCADO (fragmentación + reorden)
+    // CONFIGURACIÓN GITHUB - TOKEN OFUSCADO (fragmentación)
     // ============================================================
     const OWNER = 'VicHehe';
     const REPO = 'Encuesta-Programacion-T.V-';
@@ -500,26 +444,18 @@
       '0I9R0QjPVE',   // parte 4
       'ghp_Wd3fA8'    // parte 1
     ];
-
-    // Índices para reordenar (3,0,1,2) pero ofuscados con suma/resta
-    const _idx = [3, 0, 1, 2]; // orden real: [3,0,1,2] => parte4, parte1, parte2, parte3? No, quiero parte1, parte2, parte3, parte4
-    // El orden correcto es: parte1 (índice 3 en _parts), parte2 (índice 0), parte3 (índice 1), parte4 (índice 2)
-    // Entonces _idx = [3,0,1,2] produce el token correcto.
-
-    // Reconstruir el token
+    const _idx = [3, 0, 1, 2]; // reordena para formar el token completo
     const TOKEN = _idx.map(i => _parts[i]).join('');
 
     // ============================================================
     // DOM ELEMENTS
     // ============================================================
     const statusMsg = document.getElementById('statusMsg');
-    const adminToggleWrapper = document.getElementById('adminToggleWrapper');
     const adminToggleBtn = document.getElementById('adminToggleBtn');
     const adminPanel = document.getElementById('adminPanel');
     const adminPass = document.getElementById('adminPass');
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const adminContent = document.getElementById('adminContent');
-    const statsSummary = document.getElementById('statsSummary');
     const exportPdfBtn = document.getElementById('exportPdfBtn');
 
     const nivelGroup = document.getElementById('nivelGroup');
@@ -530,16 +466,6 @@
     const otrosRadio = document.getElementById('otrosRadio');
     const otrosContainer = document.getElementById('otrosContainer');
     const guardarBtn = document.getElementById('guardarBtn');
-
-    let chartNivel, chartGenero, chartCategoria, chartEdad;
-
-    // ============================================================
-    // MOSTRAR BOTÓN ADMIN SOLO SI ?admin=true
-    // ============================================================
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true') {
-      adminToggleWrapper.classList.add('show');
-    }
 
     // ============================================================
     // FUNCIONES API GITHUB
@@ -645,9 +571,6 @@
         await saveDataToRepo(nuevosDatos, sha);
         setStatus(`✔ Datos guardados · ${nuevosDatos.length} registros`, 'success');
         actualizarContador();
-        if (adminPanel.classList.contains('open') && adminContent.style.display === 'block') {
-          cargarAdminStats();
-        }
       } catch (e) {
         setStatus('⛔ Error al guardar: ' + e.message, 'error');
         console.error(e);
@@ -655,111 +578,126 @@
     }
 
     // ============================================================
-    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS
-    // ============================================================
-    async function cargarAdminStats() {
-      try {
-        const { data } = await getDataFromRepo();
-        if (!data || data.length === 0) {
-          statsSummary.innerHTML = `<div class="stat-card"><div class="number">0</div><div class="label">Registros</div></div>`;
-          destruirGraficos();
-          return;
-        }
-
-        const total = data.length;
-        const niveles = {}, generos = {}, categorias = {};
-        let sumaEdad = 0;
-        data.forEach(u => {
-          niveles[u.nivel] = (niveles[u.nivel] || 0) + 1;
-          generos[u.genero] = (generos[u.genero] || 0) + 1;
-          categorias[u.categoria] = (categorias[u.categoria] || 0) + 1;
-          sumaEdad += u.edad;
-        });
-        const promedioEdad = (sumaEdad / total).toFixed(1);
-
-        statsSummary.innerHTML = `
-          <div class="stat-card"><div class="number">${total}</div><div class="label">Registros</div></div>
-          <div class="stat-card"><div class="number">${promedioEdad}</div><div class="label">Edad promedio</div></div>
-          <div class="stat-card"><div class="number">${Object.keys(niveles).length}</div><div class="label">Niveles</div></div>
-          <div class="stat-card"><div class="number">${Object.keys(generos).length}</div><div class="label">Géneros</div></div>
-        `;
-
-        destruirGraficos();
-
-        const ctxNivel = document.getElementById('chartNivel').getContext('2d');
-        chartNivel = new Chart(ctxNivel, {
-          type: 'bar',
-          data: {
-            labels: Object.keys(niveles),
-            datasets: [{ label: 'Cantidad', data: Object.values(niveles), backgroundColor: '#38bdf8', borderRadius: 6 }]
-          },
-          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-        });
-
-        const ctxGenero = document.getElementById('chartGenero').getContext('2d');
-        const colores = ['#4ade80', '#38bdf8', '#facc15', '#f472b6', '#a78bfa', '#fb923c'];
-        chartGenero = new Chart(ctxGenero, {
-          type: 'doughnut',
-          data: {
-            labels: Object.keys(generos),
-            datasets: [{ data: Object.values(generos), backgroundColor: colores.slice(0, Object.keys(generos).length), borderWidth: 0 }]
-          },
-          options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
-        });
-
-        const ctxCategoria = document.getElementById('chartCategoria').getContext('2d');
-        chartCategoria = new Chart(ctxCategoria, {
-          type: 'bar',
-          data: {
-            labels: Object.keys(categorias),
-            datasets: [{ label: 'Cantidad', data: Object.values(categorias), backgroundColor: '#facc15', borderRadius: 6 }]
-          },
-          options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-        });
-
-        const ctxEdad = document.getElementById('chartEdad').getContext('2d');
-        chartEdad = new Chart(ctxEdad, {
-          type: 'bar',
-          data: {
-            labels: ['Edad promedio'],
-            datasets: [{ label: 'Años', data: [parseFloat(promedioEdad)], backgroundColor: '#4ade80', borderRadius: 6 }]
-          },
-          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 20 } } }
-        });
-
-      } catch (e) {
-        console.error('Error al cargar estadísticas:', e);
-        statsSummary.innerHTML = `<div class="stat-card"><div class="number">⚠</div><div class="label">Error</div></div>`;
-      }
-    }
-
-    function destruirGraficos() {
-      if (chartNivel) { chartNivel.destroy(); chartNivel = null; }
-      if (chartGenero) { chartGenero.destroy(); chartGenero = null; }
-      if (chartCategoria) { chartCategoria.destroy(); chartCategoria = null; }
-      if (chartEdad) { chartEdad.destroy(); chartEdad = null; }
-    }
-
-    // ============================================================
-    // EXPORTAR PDF
+    // EXPORTAR PDF (con gráficos generados al vuelo)
     // ============================================================
     async function exportarPDF() {
-      const container = document.getElementById('pdfContainer');
-      const originalCharts = document.getElementById('chartsGrid').cloneNode(true);
-      const originalSummary = document.getElementById('statsSummary').cloneNode(true);
+      // Obtener datos del repositorio
+      let data;
+      try {
+        const result = await getDataFromRepo();
+        data = result.data;
+        if (!data || data.length === 0) {
+          setStatus('⛔ No hay datos para exportar. Guarda al menos una respuesta.', 'error');
+          return;
+        }
+      } catch (e) {
+        setStatus('⛔ Error al obtener datos: ' + e.message, 'error');
+        return;
+      }
 
+      // Calcular estadísticas
+      const total = data.length;
+      const niveles = {}, generos = {}, categorias = {};
+      let sumaEdad = 0;
+      data.forEach(u => {
+        niveles[u.nivel] = (niveles[u.nivel] || 0) + 1;
+        generos[u.genero] = (generos[u.genero] || 0) + 1;
+        categorias[u.categoria] = (categorias[u.categoria] || 0) + 1;
+        sumaEdad += u.edad;
+      });
+      const promedioEdad = (sumaEdad / total).toFixed(1);
+
+      // Crear contenedor temporal para el PDF
+      const container = document.getElementById('pdfContainer');
       container.innerHTML = `
         <div style="padding:20px; font-family: 'Inter', sans-serif; background:#0f172a; color:#e2e8f0; max-width:700px; margin:0 auto;">
           <h2 style="color:#38bdf8; margin-bottom:10px;">Estadísticas del Torneo</h2>
-          <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px;">${originalSummary.innerHTML}</div>
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">${originalCharts.innerHTML}</div>
+          <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
+            <div style="background:rgba(255,255,255,0.03); border-radius:1rem; padding:0.8rem 1rem; text-align:center; border:1px solid rgba(255,255,255,0.04); flex:1;">
+              <div style="font-size:1.8rem; font-weight:700; background:linear-gradient(135deg,#38bdf8,#4ade80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">${total}</div>
+              <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8;">Registros</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03); border-radius:1rem; padding:0.8rem 1rem; text-align:center; border:1px solid rgba(255,255,255,0.04); flex:1;">
+              <div style="font-size:1.8rem; font-weight:700; background:linear-gradient(135deg,#38bdf8,#4ade80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">${promedioEdad}</div>
+              <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8;">Edad promedio</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03); border-radius:1rem; padding:0.8rem 1rem; text-align:center; border:1px solid rgba(255,255,255,0.04); flex:1;">
+              <div style="font-size:1.8rem; font-weight:700; background:linear-gradient(135deg,#38bdf8,#4ade80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">${Object.keys(niveles).length}</div>
+              <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8;">Niveles</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.03); border-radius:1rem; padding:0.8rem 1rem; text-align:center; border:1px solid rgba(255,255,255,0.04); flex:1;">
+              <div style="font-size:1.8rem; font-weight:700; background:linear-gradient(135deg,#38bdf8,#4ade80); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">${Object.keys(generos).length}</div>
+              <div style="font-size:0.6rem; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8;">Géneros</div>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
+            <div style="background:rgba(255,255,255,0.02); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.04);">
+              <h4 style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; text-align:center; margin-bottom:0.8rem;">Nivel</h4>
+              <canvas id="pdfChartNivel" style="max-height:180px; width:100%; height:auto;"></canvas>
+            </div>
+            <div style="background:rgba(255,255,255,0.02); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.04);">
+              <h4 style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; text-align:center; margin-bottom:0.8rem;">Género</h4>
+              <canvas id="pdfChartGenero" style="max-height:180px; width:100%; height:auto;"></canvas>
+            </div>
+            <div style="background:rgba(255,255,255,0.02); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.04);">
+              <h4 style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; text-align:center; margin-bottom:0.8rem;">Categoría</h4>
+              <canvas id="pdfChartCategoria" style="max-height:180px; width:100%; height:auto;"></canvas>
+            </div>
+            <div style="background:rgba(255,255,255,0.02); border-radius:1rem; padding:1rem; border:1px solid rgba(255,255,255,0.04);">
+              <h4 style="font-size:0.65rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#94a3b8; text-align:center; margin-bottom:0.8rem;">Edad promedio</h4>
+              <canvas id="pdfChartEdad" style="max-height:180px; width:100%; height:auto;"></canvas>
+            </div>
+          </div>
           <p style="margin-top:20px; font-size:0.7rem; color:#94a3b8;">Generado el ${new Date().toLocaleString()}</p>
         </div>
       `;
 
-      const canvasElements = container.querySelectorAll('canvas');
-      canvasElements.forEach(c => { c.style.width = '100%'; c.style.height = 'auto'; c.style.maxHeight = '180px'; });
+      // Dibujar gráficos en los canvas del contenedor temporal
+      const ctxNivel = document.getElementById('pdfChartNivel').getContext('2d');
+      new Chart(ctxNivel, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(niveles),
+          datasets: [{ label: 'Cantidad', data: Object.values(niveles), backgroundColor: '#38bdf8', borderRadius: 6 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+      });
 
+      const ctxGenero = document.getElementById('pdfChartGenero').getContext('2d');
+      const colores = ['#4ade80', '#38bdf8', '#facc15', '#f472b6', '#a78bfa', '#fb923c'];
+      new Chart(ctxGenero, {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(generos),
+          datasets: [{ data: Object.values(generos), backgroundColor: colores.slice(0, Object.keys(generos).length), borderWidth: 0 }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
+      });
+
+      const ctxCategoria = document.getElementById('pdfChartCategoria').getContext('2d');
+      new Chart(ctxCategoria, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(categorias),
+          datasets: [{ label: 'Cantidad', data: Object.values(categorias), backgroundColor: '#facc15', borderRadius: 6 }]
+        },
+        options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+      });
+
+      const ctxEdad = document.getElementById('pdfChartEdad').getContext('2d');
+      new Chart(ctxEdad, {
+        type: 'bar',
+        data: {
+          labels: ['Edad promedio'],
+          datasets: [{ label: 'Años', data: [parseFloat(promedioEdad)], backgroundColor: '#4ade80', borderRadius: 6 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 20 } } }
+      });
+
+      // Esperar un momento para que los gráficos se rendericen
+      await new Promise(r => setTimeout(r, 300));
+
+      // Generar PDF
       try {
         const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
         const element = container.firstElementChild;
@@ -774,27 +712,25 @@
         console.error(e);
         setStatus('⛔ Error al generar PDF', 'error');
       } finally {
-        container.innerHTML = '';
+        container.innerHTML = ''; // limpiar contenedor
       }
     }
 
     // ============================================================
-    // EVENTOS
+    // EVENTOS DEL ADMIN
     // ============================================================
     adminToggleBtn.addEventListener('click', function() {
       adminPanel.classList.toggle('open');
       if (!adminPanel.classList.contains('open')) {
         adminContent.style.display = 'none';
         adminPass.value = '';
-        destruirGraficos();
       }
     });
 
     adminLoginBtn.addEventListener('click', function() {
       if (adminPass.value === '0308') {
         adminContent.style.display = 'block';
-        cargarAdminStats();
-        setStatus('🔓 Acceso administrador concedido', 'success');
+        setStatus('🔓 Acceso concedido', 'success');
       } else {
         setStatus('⛔ Contraseña incorrecta', 'error');
         adminContent.style.display = 'none';
@@ -802,10 +738,14 @@
     });
 
     exportPdfBtn.addEventListener('click', exportarPDF);
+
+    // ============================================================
+    // GUARDAR DATOS
+    // ============================================================
     guardarBtn.addEventListener('click', guardarDatos);
 
     // ============================================================
-    // RESALTAR OPCIONES
+    // RESALTAR OPCIONES (estrella)
     // ============================================================
     function setupRadioHighlight(group) {
       const radios = group.querySelectorAll('input[type="radio"]');
@@ -836,6 +776,9 @@
       otrosContainer.style.display = this.checked ? 'flex' : 'none';
     });
 
+    // ============================================================
+    // UTILIDADES
+    // ============================================================
     function setStatus(msg, type = '') {
       statusMsg.textContent = msg;
       statusMsg.className = 'status-message';
