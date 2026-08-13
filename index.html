@@ -44,9 +44,10 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-wrap: wrap;
     }
+    /* Logo más grande */
     .logo-container {
-      width: 160px;
-      height: 90px;
+      width: 200px;
+      height: 112.5px;
       flex-shrink: 0;
       overflow: hidden;
       border-radius: 14px;
@@ -240,6 +241,28 @@
       transform: scale(0.96);
     }
 
+    /* ===== FORMULARIO ===== */
+    .form-wrapper {
+      transition: all 0.3s ease;
+    }
+    .form-wrapper.votado {
+      display: none;
+    }
+    .gracias-msg {
+      display: none;
+      text-align: center;
+      font-size: 1.2rem;
+      color: #4ade80;
+      padding: 2rem 0;
+      background: rgba(74,222,128,0.05);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(74,222,128,0.2);
+      margin-top: 1rem;
+    }
+    .gracias-msg.show {
+      display: block;
+    }
+
     .field {
       margin-bottom: 1.8rem;
       border-left: 3px solid rgba(56,189,248,0.2);
@@ -385,7 +408,7 @@
       .main-container { padding: 1.2rem; }
       .title-group h1 { font-size: 1.3rem; }
       .header { gap: 0.8rem; }
-      .logo-container { width: 120px; height: 67.5px; }
+      .logo-container { width: 140px; height: 78.75px; }
       .opt-item { font-size: 0.6rem; padding: 0.2rem 0.8rem 0.2rem 0.6rem; }
       .btn { font-size: 0.6rem; padding: 0.4rem 1rem; }
       .admin-panel input[type="password"] { width: 120px; }
@@ -408,7 +431,7 @@
     <div class="login-row">
       <label>
         <span>Contraseña</span>
-        <input type="password" id="adminPass" placeholder="AXDJ" />
+        <input type="password" id="adminPass" placeholder="1234" />
       </label>
       <button class="btn-login" id="adminLoginBtn">Acceder</button>
     </div>
@@ -420,6 +443,7 @@
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
         <div class="chart-box"><h4>Edad (promedio)</h4><canvas id="chartEdad"></canvas></div>
       </div>
+      <!-- Botón exportar (se oculta en la captura) -->
       <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNG</button>
     </div>
   </div>
@@ -427,7 +451,7 @@
   <!-- HEADER -->
   <div class="header">
     <div class="logo-container">
-      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/160x90/1e293b/38bdf8?text=CB'" />
+      <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/200x112/1e293b/38bdf8?text=CB'" />
     </div>
     <div class="title-group">
       <h1>CAMPUS BYTE</h1>
@@ -435,50 +459,55 @@
     </div>
   </div>
 
-  <!-- FORMULARIO -->
-  <div class="field">
-    <span class="field-label">Nivel de curso</span>
-    <div class="options-grid" id="nivelGroup">
-      <label class="opt-item" data-value="1 medio"><input type="radio" name="nivel" value="1 medio" /> 1 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="2 medio"><input type="radio" name="nivel" value="2 medio" /> 2 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="3 medio"><input type="radio" name="nivel" value="3 medio" /> 3 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="4 medio"><input type="radio" name="nivel" value="4 medio" /> 4 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
+  <!-- FORMULARIO + MENSAJE DE AGRADECIMIENTO -->
+  <div id="formWrapper" class="form-wrapper">
+    <div class="field">
+      <span class="field-label">Nivel de curso</span>
+      <div class="options-grid" id="nivelGroup">
+        <label class="opt-item" data-value="1 medio"><input type="radio" name="nivel" value="1 medio" /> 1 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="2 medio"><input type="radio" name="nivel" value="2 medio" /> 2 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="3 medio"><input type="radio" name="nivel" value="3 medio" /> 3 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="4 medio"><input type="radio" name="nivel" value="4 medio" /> 4 medio <img src="mario.png" onerror="this.style.display='none'" /></label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Edad (años)</span>
+      <input type="text" class="input-text" id="edadInput" placeholder="Ej: 17" maxlength="3" />
+    </div>
+
+    <div class="field">
+      <span class="field-label">Género de juego favorito</span>
+      <div class="options-grid" id="gameGroup">
+        <label class="opt-item" data-value="Battle Royal"><input type="radio" name="genero" value="Battle Royal" /> Battle Royal <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Combate"><input type="radio" name="genero" value="Combate" /> Combate <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Carreras"><input type="radio" name="genero" value="Carreras" /> Carreras <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Estrategia"><input type="radio" name="genero" value="Estrategia" /> Estrategia <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Moba"><input type="radio" name="genero" value="Moba" /> Moba <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="otros" id="otrosLabel"><input type="radio" name="genero" value="otros" id="otrosRadio" /> Otros <img src="mario.png" onerror="this.style.display='none'" /></label>
+      </div>
+      <div class="field-otros" id="otrosContainer">
+        <span class="label-otros">▸ Especifica:</span>
+        <input type="text" class="input-text" id="otrosInput" placeholder="ej: Minecraft" style="max-width:200px;" />
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Categoría</span>
+      <div class="options-grid" id="categoriaGroup">
+        <label class="opt-item" data-value="Individual"><input type="radio" name="categoria" value="Individual" /> Individual <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Parejas"><input type="radio" name="categoria" value="Parejas" /> Parejas <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Grupos"><input type="radio" name="categoria" value="Grupos" /> Grupos <img src="mario.png" onerror="this.style.display='none'" /></label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="guardarBtn">⏺ Guardar</button>
     </div>
   </div>
 
-  <div class="field">
-    <span class="field-label">Edad (años)</span>
-    <input type="text" class="input-text" id="edadInput" placeholder="Ej: 17" maxlength="3" />
-  </div>
-
-  <div class="field">
-    <span class="field-label">Género de juego favorito</span>
-    <div class="options-grid" id="gameGroup">
-      <label class="opt-item" data-value="Battle Royal"><input type="radio" name="genero" value="Battle Royal" /> Battle Royal <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="Combate"><input type="radio" name="genero" value="Combate" /> Combate <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="Carreras"><input type="radio" name="genero" value="Carreras" /> Carreras <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="Estrategia"><input type="radio" name="genero" value="Estrategia" /> Estrategia <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="Moba"><input type="radio" name="genero" value="Moba" /> Moba <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="otros" id="otrosLabel"><input type="radio" name="genero" value="otros" id="otrosRadio" /> Otros <img src="mario.png" onerror="this.style.display='none'" /></label>
-    </div>
-    <div class="field-otros" id="otrosContainer">
-      <span class="label-otros">▸ Especifica:</span>
-      <input type="text" class="input-text" id="otrosInput" placeholder="ej: Minecraft" style="max-width:200px;" />
-    </div>
-  </div>
-
-  <div class="field">
-    <span class="field-label">Categoría</span>
-    <div class="options-grid" id="categoriaGroup">
-      <label class="opt-item" data-value="Individual"><input type="radio" name="categoria" value="Individual" /> Individual <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="Parejas"><input type="radio" name="categoria" value="Parejas" /> Parejas <img src="mario.png" onerror="this.style.display='none'" /></label>
-      <label class="opt-item" data-value="Grupos"><input type="radio" name="categoria" value="Grupos" /> Grupos <img src="mario.png" onerror="this.style.display='none'" /></label>
-    </div>
-  </div>
-
-  <div class="actions">
-    <button class="btn btn-primary" id="guardarBtn">⏺ Guardar</button>
-  </div>
+  <!-- Mensaje de agradecimiento (oculto por defecto) -->
+  <div class="gracias-msg" id="graciasMsg">🎮 ¡Gracias por votar! Tu opinión ha sido registrada.</div>
 
   <div class="status-message" id="statusMsg">>_ Sistema listo · selecciona opciones</div>
 </div>
@@ -488,18 +517,17 @@
     "use strict";
 
     // ============================================================
-    // CONFIGURACIÓN GITHUB - TOKEN OFUSCADO (fragmentación + reorden)
+    // CONFIGURACIÓN GITHUB - TOKEN OFUSCADO
     // ============================================================
     const OWNER = 'VicHehe';
     const REPO = 'Encuesta-Programacion-T.V-';
     const PATH = 'usuarios.json';
 
-    // Partes del token en orden desordenado
     const _parts = [
-      '4pOR0rOjNu',   // parte 2
-      'WU2PycPxRR',   // parte 3
-      '0I9R0QjPVE',   // parte 4
-      'ghp_Wd3fA8'    // parte 1
+      '4pOR0rOjNu',
+      'WU2PycPxRR',
+      '0I9R0QjPVE',
+      'ghp_Wd3fA8'
     ];
     const _idx = [3, 0, 1, 2];
     const TOKEN = _idx.map(i => _parts[i]).join('');
@@ -516,6 +544,9 @@
     const statsSummary = document.getElementById('statsSummary');
     const exportPngBtn = document.getElementById('exportPngBtn');
 
+    const formWrapper = document.getElementById('formWrapper');
+    const graciasMsg = document.getElementById('graciasMsg');
+
     const nivelGroup = document.getElementById('nivelGroup');
     const gameGroup = document.getElementById('gameGroup');
     const categoriaGroup = document.getElementById('categoriaGroup');
@@ -526,6 +557,28 @@
     const guardarBtn = document.getElementById('guardarBtn');
 
     let chartNivel, chartGenero, chartCategoria, chartEdad;
+
+    // ============================================================
+    // LOCALSTORAGE - VOTO ÚNICO
+    // ============================================================
+    const CLAVE_VOTO = 'campusByte_votoRealizado';
+
+    function yaVoto() {
+      return localStorage.getItem(CLAVE_VOTO) === 'true';
+    }
+
+    function marcarVoto() {
+      localStorage.setItem(CLAVE_VOTO, 'true');
+    }
+
+    // Si ya votó, ocultar formulario y mostrar mensaje
+    if (yaVoto()) {
+      formWrapper.classList.add('votado');
+      graciasMsg.classList.add('show');
+      // Ocultar también el mensaje de estado (opcional)
+      statusMsg.textContent = '✅ Ya has votado anteriormente. ¡Gracias!';
+      statusMsg.className = 'status-message success';
+    }
 
     // ============================================================
     // FUNCIONES API GITHUB
@@ -575,6 +628,7 @@
     // INICIALIZAR CONTADOR
     // ============================================================
     async function actualizarContador() {
+      if (yaVoto()) return; // si ya votó, no molestar
       try {
         const { data } = await getDataFromRepo();
         if (data && data.length > 0) {
@@ -590,9 +644,15 @@
     actualizarContador();
 
     // ============================================================
-    // GUARDAR DATOS
+    // GUARDAR DATOS (con voto único)
     // ============================================================
     async function guardarDatos() {
+      // Si ya votó, no permitir guardar de nuevo
+      if (yaVoto()) {
+        setStatus('⚠ Ya has votado anteriormente.', 'error');
+        return;
+      }
+
       const nivelEl = document.querySelector('input[name="nivel"]:checked');
       const generoEl = document.querySelector('input[name="genero"]:checked');
       const categoriaEl = document.querySelector('input[name="categoria"]:checked');
@@ -629,8 +689,16 @@
         const nuevosDatos = data || [];
         nuevosDatos.push(nuevo);
         await saveDataToRepo(nuevosDatos, sha);
-        setStatus(`✔ Datos guardados · ${nuevosDatos.length} registros`, 'success');
-        actualizarContador();
+
+        // Marcar voto en localStorage
+        marcarVoto();
+
+        // Ocultar formulario y mostrar mensaje de agradecimiento
+        formWrapper.classList.add('votado');
+        graciasMsg.classList.add('show');
+        setStatus('✅ ¡Gracias por votar! Tu respuesta ha sido guardada.', 'success');
+
+        // Actualizar contador si el admin está abierto
         if (adminPanel.classList.contains('open') && adminContent.style.display === 'block') {
           cargarAdminStats();
         }
@@ -727,34 +795,44 @@
     }
 
     // ============================================================
-    // EXPORTAR PNG (captura todo el panel admin: estadísticas + gráficos)
+    // EXPORTAR PNG (sin el botón de exportar)
     // ============================================================
     async function exportarPNG() {
-      // Verificar que hay datos mostrados
       const statsText = statsSummary.innerText;
       if (statsText.includes('0') && statsText.includes('Registros')) {
         setStatus('⛔ No hay datos para exportar. Guarda al menos una respuesta.', 'error');
         return;
       }
 
-      const element = document.getElementById('adminContent');
-      if (!element) {
-        setStatus('⛔ Error: no se encontró el contenido del panel admin.', 'error');
-        return;
-      }
+      // Clonar el contenido del adminContent pero removiendo el botón de exportar
+      const original = document.getElementById('adminContent');
+      const clon = original.cloneNode(true);
+      // Eliminar el botón de exportar del clon
+      const btnExport = clon.querySelector('#exportPngBtn');
+      if (btnExport) btnExport.remove();
+
+      // Crear un contenedor temporal invisible para renderizar el clon
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '0';
+      tempDiv.style.width = original.scrollWidth + 'px';
+      tempDiv.style.backgroundColor = '#0f172a';
+      tempDiv.appendChild(clon);
+      document.body.appendChild(tempDiv);
 
       try {
         setStatus('📸 Capturando imagen...', '');
-        await new Promise(r => setTimeout(r, 300)); // esperar renderizado
+        await new Promise(r => setTimeout(r, 300));
 
-        const canvas = await html2canvas(element, {
+        const canvas = await html2canvas(tempDiv, {
           scale: 2,
           useCORS: true,
           backgroundColor: '#0f172a',
           logging: false,
           allowTaint: false,
-          width: element.scrollWidth,
-          height: element.scrollHeight
+          width: original.scrollWidth,
+          height: original.scrollHeight
         });
 
         const imgData = canvas.toDataURL('image/png');
@@ -767,6 +845,8 @@
       } catch (e) {
         console.error(e);
         setStatus('⛔ Error al exportar PNG: ' + e.message, 'error');
+      } finally {
+        document.body.removeChild(tempDiv);
       }
     }
 
