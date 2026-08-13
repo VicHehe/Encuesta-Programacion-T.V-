@@ -44,7 +44,6 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       flex-wrap: wrap;
     }
-    /* Logo más grande */
     .logo-container {
       width: 320px;
       height: 180px;
@@ -251,6 +250,10 @@
     }
     .gracias-msg.show {
       display: block;
+    }
+    .gracias-msg.error {
+      color: #f87171;
+      border-color: rgba(248,113,113,0.2);
     }
 
     .field {
@@ -490,7 +493,7 @@
     </div>
   </div>
 
-  <!-- Mensaje de agradecimiento -->
+  <!-- Mensaje de agradecimiento (también usado para error de modo incógnito) -->
   <div class="gracias-msg" id="graciasMsg">🎮 ¡Gracias por votar! Tu opinión ha sido registrada.</div>
 
   <div class="status-message" id="statusMsg">>_ Sistema listo</div>
@@ -542,6 +545,39 @@
     let chartNivel, chartGenero, chartCategoria, chartEdad;
 
     // ============================================================
+    // DETECCIÓN DE MODO INCOGNITO / PRIVADO
+    // ============================================================
+    function detectarModoPrivado() {
+      return new Promise((resolve) => {
+        // Primero probar localStorage
+        let localStorageOk = true;
+        try {
+          localStorage.setItem('__test__', 'test');
+          localStorage.removeItem('__test__');
+        } catch (e) {
+          localStorageOk = false;
+        }
+
+        if (!localStorageOk) {
+          resolve(true);
+          return;
+        }
+
+        // Luego probar IndexedDB (falla en Safari y Firefox en modo privado)
+        try {
+          const request = indexedDB.open('__test__');
+          request.onerror = () => resolve(true);
+          request.onsuccess = () => {
+            request.result.close();
+            resolve(false);
+          };
+        } catch (e) {
+          resolve(true);
+        }
+      });
+    }
+
+    // ============================================================
     // LOCALSTORAGE - VOTO ÚNICO
     // ============================================================
     const CLAVE_VOTO = 'campusByte_votoRealizado';
@@ -554,12 +590,36 @@
       localStorage.setItem(CLAVE_VOTO, 'true');
     }
 
-    if (yaVoto()) {
-      formWrapper.classList.add('votado');
-      graciasMsg.classList.add('show');
-      statusMsg.textContent = '✅ Ya has votado anteriormente. ¡Gracias!';
-      statusMsg.className = 'status-message success';
-    }
+    // ============================================================
+    // INICIO - DETECTAR MODO PRIVADO Y APLICAR RESTRICCIONES
+    // ============================================================
+    detectarModoPrivado().then(privado => {
+      if (privado) {
+        // Ocultar formulario y mostrar mensaje de error
+        formWrapper.style.display = 'none';
+        graciasMsg.textContent = '⛔ Modo incógnito detectado. No puedes votar.';
+        graciasMsg.className = 'gracias-msg show error';
+        statusMsg.textContent = '⛔ Modo incógnito no permitido.';
+        statusMsg.className = 'status-message error';
+        // Desactivar botón guardar (por si acaso)
+        guardarBtn.disabled = true;
+      } else {
+        // Si ya votó, ocultar formulario y mostrar gracias
+        if (yaVoto()) {
+          formWrapper.classList.add('votado');
+          graciasMsg.textContent = '🎮 ¡Gracias por votar! Tu opinión ha sido registrada.';
+          graciasMsg.className = 'gracias-msg show';
+          statusMsg.textContent = '✅ Ya has votado anteriormente. ¡Gracias!';
+          statusMsg.className = 'status-message success';
+        } else {
+          // Normal: mostrar formulario
+          statusMsg.textContent = '>_ Sistema listo';
+          statusMsg.className = 'status-message';
+        }
+        // Asegurar que el botón guardar esté habilitado (por si acaso)
+        guardarBtn.disabled = false;
+      }
+    });
 
     // ============================================================
     // FUNCIONES API GITHUB
@@ -655,7 +715,8 @@
 
         marcarVoto();
         formWrapper.classList.add('votado');
-        graciasMsg.classList.add('show');
+        graciasMsg.textContent = '🎮 ¡Gracias por votar! Tu opinión ha sido registrada.';
+        graciasMsg.className = 'gracias-msg show';
         setStatus('✅ ¡Gracias por votar! Tu respuesta ha sido guardada.', 'success');
 
         if (adminPanel.classList.contains('open') && adminContent.style.display === 'block') {
@@ -686,7 +747,7 @@
     }
 
     // ============================================================
-    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS (mejorados)
+    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS
     // ============================================================
     async function cargarAdminStats() {
       try {
@@ -714,7 +775,6 @@
 
         const modaEdad = calcularModa(edades);
 
-        // Tarjetas con iconos y texto más claro
         statsSummary.innerHTML = `
           <div class="stat-card"><span class="icon">📊</span><div class="number">${total}</div><div class="label">Total votos</div></div>
           <div class="stat-card"><span class="icon">🎯</span><div class="number">${modaEdad !== null ? modaEdad : '—'}</div><div class="label">Edad más frecuente</div></div>
@@ -758,7 +818,7 @@
           options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
 
-        // Gráfico de Edad más frecuente (barra simple)
+        // Gráfico de Edad más frecuente
         const ctxEdad = document.getElementById('chartEdad').getContext('2d');
         if (modaEdad !== null) {
           chartEdad = new Chart(ctxEdad, {
