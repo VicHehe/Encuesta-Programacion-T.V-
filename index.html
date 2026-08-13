@@ -11,7 +11,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
     /* ===== RESET & BASE ===== */
@@ -221,7 +220,7 @@
       height: auto !important;
     }
 
-    .btn-pdf {
+    .btn-export {
       background: #4ade80;
       border: none;
       color: #0f172a;
@@ -236,7 +235,7 @@
       gap: 0.5rem;
       margin-top: 0.5rem;
     }
-    .btn-pdf:hover {
+    .btn-export:hover {
       background: #38bdf8;
       transform: scale(0.96);
     }
@@ -382,7 +381,7 @@
     .status-message.success { color: #4ade80; border-color: rgba(74,222,128,0.2); }
     .status-message.error { color: #f87171; border-color: rgba(248,113,113,0.2); }
 
-    #pdfContainer { display: none; }
+    #tempCapture { display: none; }
 
     @media (max-width: 640px) {
       .main-container { padding: 1.2rem; }
@@ -423,7 +422,7 @@
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
         <div class="chart-box"><h4>Edad (promedio)</h4><canvas id="chartEdad"></canvas></div>
       </div>
-      <button class="btn-pdf" id="exportPdfBtn">📄 Exportar PDF con gráficos</button>
+      <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNGs</button>
     </div>
   </div>
 
@@ -486,7 +485,7 @@
   <div class="status-message" id="statusMsg">>_ Sistema listo · selecciona opciones</div>
 </div>
 
-<div id="pdfContainer"></div>
+<div id="tempCapture"></div>
 
 <script>
   (function() {
@@ -519,7 +518,7 @@
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const adminContent = document.getElementById('adminContent');
     const statsSummary = document.getElementById('statsSummary');
-    const exportPdfBtn = document.getElementById('exportPdfBtn');
+    const exportPngBtn = document.getElementById('exportPngBtn');
 
     const nivelGroup = document.getElementById('nivelGroup');
     const gameGroup = document.getElementById('gameGroup');
@@ -732,44 +731,64 @@
     }
 
     // ============================================================
-    // EXPORTAR PDF (usando html2canvas + jsPDF directamente)
+    // EXPORTAR PNGs (gráficos + texto)
     // ============================================================
-    async function exportarPDF() {
-      // Verificar que hay datos mostrados (statsSummary tiene contenido)
+    async function exportarPNGs() {
+      // Verificar que hay datos mostrados
       const statsText = statsSummary.innerText;
       if (statsText.includes('0') && statsText.includes('Registros')) {
         setStatus('⛔ No hay datos para exportar. Guarda al menos una respuesta.', 'error');
         return;
       }
 
-      const element = document.getElementById('adminContent');
-      if (!element) {
-        setStatus('⛔ Error: no se encontró el contenido del panel admin.', 'error');
+      const chartsGrid = document.getElementById('chartsGrid');
+      const stats = document.getElementById('statsSummary');
+
+      if (!chartsGrid || !stats) {
+        setStatus('⛔ Error: no se encontraron los elementos para exportar.', 'error');
         return;
       }
 
       try {
-        // Pequeña pausa para asegurar renderizado de gráficos
-        await new Promise(r => setTimeout(r, 300));
+        setStatus('📸 Capturando imágenes...', '');
+        await new Promise(r => setTimeout(r, 300)); // esperar renderizado
 
-        const canvas = await html2canvas(element, {
+        // 1. Capturar gráficos
+        const canvasCharts = await html2canvas(chartsGrid, {
           scale: 2,
           useCORS: true,
           backgroundColor: '#0f172a',
           logging: false,
-          allowTaint: false
+          allowTaint: false,
+          width: chartsGrid.scrollWidth,
+          height: chartsGrid.scrollHeight
         });
+        const imgCharts = canvasCharts.toDataURL('image/png');
+        const linkCharts = document.createElement('a');
+        linkCharts.href = imgCharts;
+        linkCharts.download = 'graficos.png';
+        linkCharts.click();
 
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-        const imgWidth = 190; // ancho en mm
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, 'PNG', 10, 10, imgWidth, imgHeight);
-        pdf.save('estadisticas_campeonato.pdf');
-        setStatus('📄 PDF generado y descargado', 'success');
+        // 2. Capturar texto (estadísticas)
+        const canvasStats = await html2canvas(stats, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#0f172a',
+          logging: false,
+          allowTaint: false,
+          width: stats.scrollWidth,
+          height: stats.scrollHeight
+        });
+        const imgStats = canvasStats.toDataURL('image/png');
+        const linkStats = document.createElement('a');
+        linkStats.href = imgStats;
+        linkStats.download = 'estadisticas_texto.png';
+        linkStats.click();
+
+        setStatus('✅ PNGs exportados correctamente (gráficos + texto)', 'success');
       } catch (e) {
         console.error(e);
-        setStatus('⛔ Error al generar PDF: ' + e.message, 'error');
+        setStatus('⛔ Error al exportar PNGs: ' + e.message, 'error');
       }
     }
 
@@ -796,7 +815,7 @@
       }
     });
 
-    exportPdfBtn.addEventListener('click', exportarPDF);
+    exportPngBtn.addEventListener('click', exportarPNGs);
     guardarBtn.addEventListener('click', guardarDatos);
 
     // ============================================================
