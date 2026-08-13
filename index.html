@@ -381,8 +381,6 @@
     .status-message.success { color: #4ade80; border-color: rgba(74,222,128,0.2); }
     .status-message.error { color: #f87171; border-color: rgba(248,113,113,0.2); }
 
-    #tempCapture { display: none; }
-
     @media (max-width: 640px) {
       .main-container { padding: 1.2rem; }
       .title-group h1 { font-size: 1.3rem; }
@@ -422,7 +420,7 @@
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
         <div class="chart-box"><h4>Edad (promedio)</h4><canvas id="chartEdad"></canvas></div>
       </div>
-      <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNGs</button>
+      <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNG</button>
     </div>
   </div>
 
@@ -484,8 +482,6 @@
 
   <div class="status-message" id="statusMsg">>_ Sistema listo · selecciona opciones</div>
 </div>
-
-<div id="tempCapture"></div>
 
 <script>
   (function() {
@@ -731,9 +727,9 @@
     }
 
     // ============================================================
-    // EXPORTAR PNGs (gráficos + texto)
+    // EXPORTAR PNG (captura todo el panel admin: estadísticas + gráficos)
     // ============================================================
-    async function exportarPNGs() {
+    async function exportarPNG() {
       // Verificar que hay datos mostrados
       const statsText = statsSummary.innerText;
       if (statsText.includes('0') && statsText.includes('Registros')) {
@@ -741,54 +737,36 @@
         return;
       }
 
-      const chartsGrid = document.getElementById('chartsGrid');
-      const stats = document.getElementById('statsSummary');
-
-      if (!chartsGrid || !stats) {
-        setStatus('⛔ Error: no se encontraron los elementos para exportar.', 'error');
+      const element = document.getElementById('adminContent');
+      if (!element) {
+        setStatus('⛔ Error: no se encontró el contenido del panel admin.', 'error');
         return;
       }
 
       try {
-        setStatus('📸 Capturando imágenes...', '');
+        setStatus('📸 Capturando imagen...', '');
         await new Promise(r => setTimeout(r, 300)); // esperar renderizado
 
-        // 1. Capturar gráficos
-        const canvasCharts = await html2canvas(chartsGrid, {
+        const canvas = await html2canvas(element, {
           scale: 2,
           useCORS: true,
           backgroundColor: '#0f172a',
           logging: false,
           allowTaint: false,
-          width: chartsGrid.scrollWidth,
-          height: chartsGrid.scrollHeight
+          width: element.scrollWidth,
+          height: element.scrollHeight
         });
-        const imgCharts = canvasCharts.toDataURL('image/png');
-        const linkCharts = document.createElement('a');
-        linkCharts.href = imgCharts;
-        linkCharts.download = 'graficos.png';
-        linkCharts.click();
 
-        // 2. Capturar texto (estadísticas)
-        const canvasStats = await html2canvas(stats, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#0f172a',
-          logging: false,
-          allowTaint: false,
-          width: stats.scrollWidth,
-          height: stats.scrollHeight
-        });
-        const imgStats = canvasStats.toDataURL('image/png');
-        const linkStats = document.createElement('a');
-        linkStats.href = imgStats;
-        linkStats.download = 'estadisticas_texto.png';
-        linkStats.click();
+        const imgData = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = 'estadisticas_completas.png';
+        link.click();
 
-        setStatus('✅ PNGs exportados correctamente (gráficos + texto)', 'success');
+        setStatus('✅ PNG exportado correctamente', 'success');
       } catch (e) {
         console.error(e);
-        setStatus('⛔ Error al exportar PNGs: ' + e.message, 'error');
+        setStatus('⛔ Error al exportar PNG: ' + e.message, 'error');
       }
     }
 
@@ -815,7 +793,7 @@
       }
     });
 
-    exportPngBtn.addEventListener('click', exportarPNGs);
+    exportPngBtn.addEventListener('click', exportarPNG);
     guardarBtn.addEventListener('click', guardarDatos);
 
     // ============================================================
