@@ -414,15 +414,8 @@
 
 <div class="main-container" id="app">
 
-  <!-- PANEL ADMIN (oculto, se abre con el atajo 03082008) -->
+  <!-- PANEL ADMIN (se abre con el atajo 03082008, sin segunda contraseña) -->
   <div class="admin-panel" id="adminPanel">
-    <div class="login-row">
-      <label>
-        <span>Contraseña</span>
-        <input type="password" id="adminPass" placeholder="1234" />
-      </label>
-      <button class="btn-login" id="adminLoginBtn">Acceder</button>
-    </div>
     <div id="adminContent">
       <div class="stats-summary" id="statsSummary"></div>
       <div class="charts-grid" id="chartsGrid">
@@ -526,8 +519,6 @@
     // ============================================================
     const statusMsg = document.getElementById('statusMsg');
     const adminPanel = document.getElementById('adminPanel');
-    const adminPass = document.getElementById('adminPass');
-    const adminLoginBtn = document.getElementById('adminLoginBtn');
     const adminContent = document.getElementById('adminContent');
     const statsSummary = document.getElementById('statsSummary');
     const exportPngBtn = document.getElementById('exportPngBtn');
@@ -545,6 +536,22 @@
     const guardarBtn = document.getElementById('guardarBtn');
 
     let chartNivel, chartGenero, chartCategoria, chartEdad;
+
+    // ============================================================
+    // LISTA DE PALABRAS PROHIBIDAS
+    // ============================================================
+    const PALABRAS_PROHIBIDAS = [
+      'porno', 'xxx', 'nsfw', 'sexo', 'puta', 'mierda', 'coño', 'verga',
+      'pene', 'vagina', 'teta', 'culo', 'pedofilo', 'violacion', 'violación',
+      'nazi', 'hitler', 'asesinato', 'suicidio', 'drogas', 'cocaína',
+      'heroína', 'marihuana', 'weed', 'porro', 'hijo de puta', 'cabron',
+      'gilipollas', 'imbecil', 'tarado', 'subnormal', 'maricon', 'maricón'
+    ];
+
+    function contienePalabraProhibida(texto) {
+      const textoLower = texto.toLowerCase().trim();
+      return PALABRAS_PROHIBIDAS.some(palabra => textoLower.includes(palabra));
+    }
 
     // ============================================================
     // DETECCIÓN DE MODO INCOGNITO / PRIVADO
@@ -661,7 +668,7 @@
     }
 
     // ============================================================
-    // GUARDAR DATOS (con voto único y edad 13-24)
+    // GUARDAR DATOS (con voto único, edad 13-24 y filtro de palabras)
     // ============================================================
     async function guardarDatos() {
       if (yaVoto()) {
@@ -689,6 +696,11 @@
         const otrosText = otrosInput.value.trim();
         if (otrosText === '') {
           setStatus('⚠ Especifica el juego en "Otros"', 'error');
+          return;
+        }
+        // Verificar palabras prohibidas
+        if (contienePalabraProhibida(otrosText)) {
+          setStatus('⚠ El texto contiene palabras inapropiadas. Por favor, corrige.', 'error');
           return;
         }
         generoVal = `otros: ${otrosText}`;
@@ -897,7 +909,7 @@
     }
 
     // ============================================================
-    // ADMIN: ATEJO CON TECLADO (03082008)
+    // ADMIN: ATEJO CON TECLADO (03082008) - ABRE DIRECTAMENTE
     // ============================================================
     let secuencia = '';
     document.addEventListener('keydown', function(e) {
@@ -908,37 +920,36 @@
       if (secuencia.length > 8) secuencia = secuencia.slice(-8);
       if (secuencia === '03082008') {
         secuencia = '';
-        adminPanel.classList.toggle('open');
-        if (!adminPanel.classList.contains('open')) {
+        // Abrir o cerrar el panel admin
+        const isOpen = adminPanel.classList.contains('open');
+        if (!isOpen) {
+          adminPanel.classList.add('open');
+          adminContent.style.display = 'block';
+          cargarAdminStats();
+          setStatus('🔓 Panel administrador abierto', 'success');
+        } else {
+          adminPanel.classList.remove('open');
           adminContent.style.display = 'none';
-          adminPass.value = '';
           destruirGraficos();
+          setStatus('🔒 Panel administrador cerrado', '');
         }
         e.preventDefault();
       }
     });
 
     // ============================================================
-    // EVENTOS DEL ADMIN
+    // EVENTOS DEL ADMIN (ya no se necesita login con contraseña)
     // ============================================================
-    adminLoginBtn.addEventListener('click', function() {
-      if (adminPass.value === '0308') {
-        adminContent.style.display = 'block';
-        cargarAdminStats();
-        setStatus('🔓 Acceso administrador concedido', 'success');
-      } else {
-        setStatus('⛔ Contraseña incorrecta', 'error');
-        adminContent.style.display = 'none';
-      }
-    });
+    // El botón de login ya no se usa, pero lo mantenemos por si acaso
+    // Ahora el acceso es directo con el atajo.
 
     exportPngBtn.addEventListener('click', exportarPNG);
     guardarBtn.addEventListener('click', guardarDatos);
 
     // ============================================================
-    // RESALTAR OPCIONES (estrella) - incluyendo deporte
+    // RESALTAR OPCIONES (estrella)
     // ============================================================
-    function setupRadioHighlight(group, otrosContainerEl, otrosRadioEl) {
+    function setupRadioHighlight(group, otrosContainerEl) {
       const radios = group.querySelectorAll('input[type="radio"]');
       radios.forEach(radio => {
         radio.addEventListener('change', function() {
@@ -958,9 +969,9 @@
       });
     }
 
-    setupRadioHighlight(nivelGroup, null, null);
-    setupRadioHighlight(gameGroup, otrosContainer, otrosRadio);
-    setupRadioHighlight(categoriaGroup, null, null);
+    setupRadioHighlight(nivelGroup, null);
+    setupRadioHighlight(gameGroup, otrosContainer);
+    setupRadioHighlight(categoriaGroup, null);
 
     otrosContainer.style.display = 'none';
     otrosRadio.addEventListener('change', function() {
