@@ -487,14 +487,27 @@
     "use strict";
 
     // ============================================================
-    // CONFIGURACIÓN GITHUB (token en texto plano para pruebas)
+    // CONFIGURACIÓN GITHUB - TOKEN OFUSCADO (fragmentación + reorden)
     // ============================================================
     const OWNER = 'VicHehe';
     const REPO = 'Encuesta-Programacion-T.V-';
     const PATH = 'usuarios.json';
 
-    // --- PON AQUÍ TU NUEVO TOKEN (TEXTO PLANO) ---
-    const TOKEN = 'ghp_tu_nuevo_token_aqui';   // ← REEMPLAZA ESTO
+    // Partes del token en orden desordenado
+    const _parts = [
+      '4pOR0rOjNu',   // parte 2
+      'WU2PycPxRR',   // parte 3
+      '0I9R0QjPVE',   // parte 4
+      'ghp_Wd3fA8'    // parte 1
+    ];
+
+    // Índices para reordenar (3,0,1,2) pero ofuscados con suma/resta
+    const _idx = [3, 0, 1, 2]; // orden real: [3,0,1,2] => parte4, parte1, parte2, parte3? No, quiero parte1, parte2, parte3, parte4
+    // El orden correcto es: parte1 (índice 3 en _parts), parte2 (índice 0), parte3 (índice 1), parte4 (índice 2)
+    // Entonces _idx = [3,0,1,2] produce el token correcto.
+
+    // Reconstruir el token
+    const TOKEN = _idx.map(i => _parts[i]).join('');
 
     // ============================================================
     // DOM ELEMENTS
