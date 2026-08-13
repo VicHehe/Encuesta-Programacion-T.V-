@@ -427,10 +427,9 @@
       <div class="stats-summary" id="statsSummary"></div>
       <div class="charts-grid" id="chartsGrid">
         <div class="chart-box"><h4>Nivel</h4><canvas id="chartNivel"></canvas></div>
-        <div class="chart-box"><h4>Género</h4><canvas id="chartGenero"></canvas></div>
+        <div class="chart-box"><h4>Género de juego</h4><canvas id="chartGenero"></canvas></div>
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
         <div class="chart-box"><h4>Edad más frecuente</h4><canvas id="chartEdad"></canvas></div>
-        <div class="chart-box"><h4>Deporte</h4><canvas id="chartDeporte"></canvas></div>
       </div>
       <button class="btn-export" id="exportPngBtn">🖼️ Exportar PNG</button>
     </div>
@@ -473,6 +472,7 @@
         <label class="opt-item" data-value="Carreras"><input type="radio" name="genero" value="Carreras" /> Carreras <img src="mario.png" onerror="this.style.display='none'" /></label>
         <label class="opt-item" data-value="Estrategia"><input type="radio" name="genero" value="Estrategia" /> Estrategia <img src="mario.png" onerror="this.style.display='none'" /></label>
         <label class="opt-item" data-value="Moba"><input type="radio" name="genero" value="Moba" /> Moba <img src="mario.png" onerror="this.style.display='none'" /></label>
+        <label class="opt-item" data-value="Deportes"><input type="radio" name="genero" value="Deportes" /> Deportes <img src="mario.png" onerror="this.style.display='none'" /></label>
         <label class="opt-item" data-value="otros" id="otrosLabel"><input type="radio" name="genero" value="otros" id="otrosRadio" /> Otros <img src="mario.png" onerror="this.style.display='none'" /></label>
       </div>
       <div class="field-otros" id="otrosContainer">
@@ -487,23 +487,6 @@
         <label class="opt-item" data-value="Individual"><input type="radio" name="categoria" value="Individual" /> Individual <img src="mario.png" onerror="this.style.display='none'" /></label>
         <label class="opt-item" data-value="Parejas"><input type="radio" name="categoria" value="Parejas" /> Parejas <img src="mario.png" onerror="this.style.display='none'" /></label>
         <label class="opt-item" data-value="Grupos"><input type="radio" name="categoria" value="Grupos" /> Grupos <img src="mario.png" onerror="this.style.display='none'" /></label>
-      </div>
-    </div>
-
-    <!-- ===== NUEVO APARTADO "DEPORTE" ===== -->
-    <div class="field">
-      <span class="field-label">Deporte favorito</span>
-      <div class="options-grid" id="deporteGroup">
-        <label class="opt-item" data-value="Fútbol"><input type="radio" name="deporte" value="Fútbol" /> Fútbol <img src="mario.png" onerror="this.style.display='none'" /></label>
-        <label class="opt-item" data-value="Baloncesto"><input type="radio" name="deporte" value="Baloncesto" /> Baloncesto <img src="mario.png" onerror="this.style.display='none'" /></label>
-        <label class="opt-item" data-value="Voleibol"><input type="radio" name="deporte" value="Voleibol" /> Voleibol <img src="mario.png" onerror="this.style.display='none'" /></label>
-        <label class="opt-item" data-value="Tenis"><input type="radio" name="deporte" value="Tenis" /> Tenis <img src="mario.png" onerror="this.style.display='none'" /></label>
-        <label class="opt-item" data-value="Natación"><input type="radio" name="deporte" value="Natación" /> Natación <img src="mario.png" onerror="this.style.display='none'" /></label>
-        <label class="opt-item" data-value="otrosDeporte" id="deporteOtrosLabel"><input type="radio" name="deporte" value="otrosDeporte" id="deporteOtrosRadio" /> Otros <img src="mario.png" onerror="this.style.display='none'" /></label>
-      </div>
-      <div class="field-otros" id="deporteOtrosContainer">
-        <span class="label-otros">▸ Especifica:</span>
-        <input type="text" class="input-text" id="deporteOtrosInput" placeholder="ej: Atletismo" style="max-width:200px;" />
       </div>
     </div>
 
@@ -555,17 +538,13 @@
     const nivelGroup = document.getElementById('nivelGroup');
     const gameGroup = document.getElementById('gameGroup');
     const categoriaGroup = document.getElementById('categoriaGroup');
-    const deporteGroup = document.getElementById('deporteGroup');
     const edadInput = document.getElementById('edadInput');
     const otrosInput = document.getElementById('otrosInput');
     const otrosRadio = document.getElementById('otrosRadio');
     const otrosContainer = document.getElementById('otrosContainer');
-    const deporteOtrosInput = document.getElementById('deporteOtrosInput');
-    const deporteOtrosRadio = document.getElementById('deporteOtrosRadio');
-    const deporteOtrosContainer = document.getElementById('deporteOtrosContainer');
     const guardarBtn = document.getElementById('guardarBtn');
 
-    let chartNivel, chartGenero, chartCategoria, chartEdad, chartDeporte;
+    let chartNivel, chartGenero, chartCategoria, chartEdad;
 
     // ============================================================
     // DETECCIÓN DE MODO INCOGNITO / PRIVADO
@@ -682,7 +661,7 @@
     }
 
     // ============================================================
-    // GUARDAR DATOS (con voto único, edad 13-24 y deporte)
+    // GUARDAR DATOS (con voto único y edad 13-24)
     // ============================================================
     async function guardarDatos() {
       if (yaVoto()) {
@@ -693,13 +672,11 @@
       const nivelEl = document.querySelector('input[name="nivel"]:checked');
       const generoEl = document.querySelector('input[name="genero"]:checked');
       const categoriaEl = document.querySelector('input[name="categoria"]:checked');
-      const deporteEl = document.querySelector('input[name="deporte"]:checked');
       const edad = edadInput.value.trim();
 
       if (!nivelEl) { setStatus('⚠ Selecciona un nivel', 'error'); return; }
-      if (!generoEl) { setStatus('⚠ Selecciona un género', 'error'); return; }
+      if (!generoEl) { setStatus('⚠ Selecciona un género de juego', 'error'); return; }
       if (!categoriaEl) { setStatus('⚠ Selecciona una categoría', 'error'); return; }
-      if (!deporteEl) { setStatus('⚠ Selecciona un deporte', 'error'); return; }
 
       const edadNum = parseInt(edad);
       if (edad === '' || isNaN(edadNum) || edadNum < 13 || edadNum > 24) {
@@ -717,22 +694,11 @@
         generoVal = `otros: ${otrosText}`;
       }
 
-      let deporteVal = deporteEl.value;
-      if (deporteVal === 'otrosDeporte') {
-        const otrosText = deporteOtrosInput.value.trim();
-        if (otrosText === '') {
-          setStatus('⚠ Especifica el deporte en "Otros"', 'error');
-          return;
-        }
-        deporteVal = `otros: ${otrosText}`;
-      }
-
       const nuevo = {
         nivel: nivelEl.value,
         edad: edadNum,
         genero: generoVal,
         categoria: categoriaEl.value,
-        deporte: deporteVal,
         timestamp: new Date().toISOString()
       };
 
@@ -776,7 +742,7 @@
     }
 
     // ============================================================
-    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS (con deporte)
+    // ADMIN: CARGAR ESTADÍSTICAS Y GRÁFICOS
     // ============================================================
     async function cargarAdminStats() {
       try {
@@ -787,20 +753,18 @@
             <div class="stat-card"><span class="icon">🎯</span><div class="number">—</div><div class="label">Edad más frecuente</div></div>
             <div class="stat-card"><span class="icon">📚</span><div class="number">0</div><div class="label">Niveles distintos</div></div>
             <div class="stat-card"><span class="icon">🎮</span><div class="number">0</div><div class="label">Géneros distintos</div></div>
-            <div class="stat-card"><span class="icon">⚽</span><div class="number">0</div><div class="label">Deportes distintos</div></div>
           `;
           destruirGraficos();
           return;
         }
 
         const total = data.length;
-        const niveles = {}, generos = {}, categorias = {}, deportes = {};
+        const niveles = {}, generos = {}, categorias = {};
         const edades = [];
         data.forEach(u => {
           niveles[u.nivel] = (niveles[u.nivel] || 0) + 1;
           generos[u.genero] = (generos[u.genero] || 0) + 1;
           categorias[u.categoria] = (categorias[u.categoria] || 0) + 1;
-          deportes[u.deporte] = (deportes[u.deporte] || 0) + 1;
           edades.push(u.edad);
         });
 
@@ -811,7 +775,6 @@
           <div class="stat-card"><span class="icon">🎯</span><div class="number">${modaEdad !== null ? modaEdad : '—'}</div><div class="label">Edad más frecuente</div></div>
           <div class="stat-card"><span class="icon">📚</span><div class="number">${Object.keys(niveles).length}</div><div class="label">Niveles distintos</div></div>
           <div class="stat-card"><span class="icon">🎮</span><div class="number">${Object.keys(generos).length}</div><div class="label">Géneros distintos</div></div>
-          <div class="stat-card"><span class="icon">⚽</span><div class="number">${Object.keys(deportes).length}</div><div class="label">Deportes distintos</div></div>
         `;
 
         destruirGraficos();
@@ -829,7 +792,7 @@
 
         // Gráfico de Género (doughnut)
         const ctxGenero = document.getElementById('chartGenero').getContext('2d');
-        const colores = ['#4ade80', '#38bdf8', '#facc15', '#f472b6', '#a78bfa', '#fb923c'];
+        const colores = ['#4ade80', '#38bdf8', '#facc15', '#f472b6', '#a78bfa', '#fb923c', '#f87171'];
         chartGenero = new Chart(ctxGenero, {
           type: 'doughnut',
           data: {
@@ -872,18 +835,6 @@
           });
         }
 
-        // Gráfico de Deporte (doughnut)
-        const ctxDeporte = document.getElementById('chartDeporte').getContext('2d');
-        const coloresDeporte = ['#60a5fa', '#34d399', '#fbbf24', '#f472b6', '#a78bfa', '#fb923c', '#f87171'];
-        chartDeporte = new Chart(ctxDeporte, {
-          type: 'doughnut',
-          data: {
-            labels: Object.keys(deportes),
-            datasets: [{ data: Object.values(deportes), backgroundColor: coloresDeporte.slice(0, Object.keys(deportes).length), borderWidth: 0 }]
-          },
-          options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
-        });
-
       } catch (e) {
         console.error('Error al cargar estadísticas:', e);
         statsSummary.innerHTML = `<div class="stat-card"><span class="icon">⚠</span><div class="number">Error</div><div class="label">Intenta de nuevo</div></div>`;
@@ -895,7 +846,6 @@
       if (chartGenero) { chartGenero.destroy(); chartGenero = null; }
       if (chartCategoria) { chartCategoria.destroy(); chartCategoria = null; }
       if (chartEdad) { chartEdad.destroy(); chartEdad = null; }
-      if (chartDeporte) { chartDeporte.destroy(); chartDeporte = null; }
     }
 
     // ============================================================
@@ -998,7 +948,7 @@
           allLabels.forEach(lb => lb.classList.remove('selected'));
           if (this.checked) {
             parentLabel.classList.add('selected');
-            if (otrosContainerEl && this.value === 'otros' || this.value === 'otrosDeporte') {
+            if (otrosContainerEl && this.value === 'otros') {
               otrosContainerEl.style.display = 'flex';
             } else if (otrosContainerEl) {
               otrosContainerEl.style.display = 'none';
@@ -1011,16 +961,10 @@
     setupRadioHighlight(nivelGroup, null, null);
     setupRadioHighlight(gameGroup, otrosContainer, otrosRadio);
     setupRadioHighlight(categoriaGroup, null, null);
-    setupRadioHighlight(deporteGroup, deporteOtrosContainer, deporteOtrosRadio);
 
     otrosContainer.style.display = 'none';
     otrosRadio.addEventListener('change', function() {
       otrosContainer.style.display = this.checked ? 'flex' : 'none';
-    });
-
-    deporteOtrosContainer.style.display = 'none';
-    deporteOtrosRadio.addEventListener('change', function() {
-      deporteOtrosContainer.style.display = this.checked ? 'flex' : 'none';
     });
 
     function setStatus(msg, type = '') {
