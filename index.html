@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CAMPUS BYTE · Inscripción</title>
 
+  <!-- Fuentes modernas -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
 
+  <!-- Chart.js para gráficos -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+  <!-- html2canvas + jsPDF para exportar PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
@@ -32,6 +36,7 @@
       color: #e2e8f0;
     }
 
+    /* ===== CONTENEDOR PRINCIPAL ===== */
     .main-container {
       max-width: 820px;
       width: 100%;
@@ -45,6 +50,7 @@
       transition: all 0.3s ease;
     }
 
+    /* ===== HEADER ===== */
     .header {
       display: flex;
       align-items: center;
@@ -64,6 +70,7 @@
       width: auto;
       border-radius: 14px;
       box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+      transition: 0.3s;
     }
 
     .title-group h1 {
@@ -84,11 +91,18 @@
       letter-spacing: 0.3em;
       text-transform: uppercase;
       margin-top: 0.15rem;
+      -webkit-text-fill-color: #94a3b8;
     }
 
+    /* ===== ADMIN TOGGLE (oculto por defecto) ===== */
     .admin-toggle {
       text-align: right;
       margin-bottom: 1rem;
+      display: none; /* Se muestra solo si ?admin=true */
+    }
+
+    .admin-toggle.show {
+      display: block;
     }
 
     .admin-toggle button {
@@ -111,6 +125,7 @@
       color: #e2e8f0;
     }
 
+    /* ===== PANEL ADMIN ===== */
     .admin-panel {
       background: rgba(15, 23, 42, 0.7);
       backdrop-filter: blur(8px);
@@ -179,6 +194,7 @@
       transform: scale(0.96);
     }
 
+    /* ===== CONTENIDO ADMIN (estadísticas) ===== */
     #adminContent {
       margin-top: 1.5rem;
       display: none;
@@ -268,6 +284,7 @@
       transform: scale(0.96);
     }
 
+    /* ===== FORMULARIO ===== */
     .field {
       margin-bottom: 1.8rem;
       border-left: 3px solid rgba(56, 189, 248, 0.2);
@@ -313,7 +330,8 @@
       border-color: rgba(56, 189, 248, 0.3);
     }
 
-    .opt-item input[type="radio"] {
+    .opt-item input[type="radio"],
+    .opt-item input[type="checkbox"] {
       accent-color: #38bdf8;
       width: 16px;
       height: 16px;
@@ -377,6 +395,7 @@
       color: #94a3b8;
     }
 
+    /* ===== ACCIONES ===== */
     .actions {
       display: flex;
       flex-wrap: wrap;
@@ -452,10 +471,12 @@
       border-color: rgba(248, 113, 113, 0.2);
     }
 
+    /* ===== CONTENEDOR PARA PDF ===== */
     #pdfContainer {
       display: none;
     }
 
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 640px) {
       .main-container {
         padding: 1.2rem;
@@ -494,15 +515,17 @@
 
 <div class="main-container" id="app">
 
-  <div class="admin-toggle">
+  <!-- ADMIN TOGGLE (oculto por defecto, se muestra si ?admin=true) -->
+  <div class="admin-toggle" id="adminToggleWrapper">
     <button id="adminToggleBtn">🔐 ADMIN</button>
   </div>
 
+  <!-- PANEL ADMIN -->
   <div class="admin-panel" id="adminPanel">
     <div class="login-row">
       <label>
         <span>Contraseña</span>
-        <input type="password" id="adminPass" placeholder="••••" />
+        <input type="password" id="adminPass" placeholder="0308" />
       </label>
       <button class="btn-login" id="adminLoginBtn">Acceder</button>
     </div>
@@ -513,13 +536,13 @@
         <div class="chart-box"><h4>Nivel</h4><canvas id="chartNivel"></canvas></div>
         <div class="chart-box"><h4>Género</h4><canvas id="chartGenero"></canvas></div>
         <div class="chart-box"><h4>Categoría</h4><canvas id="chartCategoria"></canvas></div>
-        <div class="chart-box"><h4>Edad promedio</h4><canvas id="chartEdad"></canvas></div>
+        <div class="chart-box"><h4>Edad (promedio)</h4><canvas id="chartEdad"></canvas></div>
       </div>
       <button class="btn-pdf" id="exportPdfBtn">📄 Exportar PDF con gráficos</button>
-      <button class="btn btn-secondary" id="exportJsonBtn" style="margin-left: 0.5rem;">📤 Exportar JSON</button>
     </div>
   </div>
 
+  <!-- HEADER -->
   <div class="header">
     <div class="logo-container">
       <img src="LOGO.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/56x56/1e293b/38bdf8?text=CB'" />
@@ -530,6 +553,7 @@
     </div>
   </div>
 
+  <!-- FORMULARIO -->
   <div class="field">
     <span class="field-label">Nivel de curso</span>
     <div class="options-grid" id="nivelGroup">
@@ -570,14 +594,16 @@
     </div>
   </div>
 
+  <!-- ACCIONES -->
   <div class="actions">
     <button class="btn btn-primary" id="guardarBtn">⏺ Guardar</button>
-    <button class="btn btn-secondary" id="exportJsonBtn2" style="display:none;">⏏ Exportar JSON (oculto)</button>
+    <!-- Eliminado el botón Exportar JSON -->
   </div>
 
   <div class="status-message" id="statusMsg">>_ Sistema listo · selecciona opciones</div>
 </div>
 
+<!-- Contenedor oculto para PDF (se llena dinámicamente) -->
 <div id="pdfContainer"></div>
 
 <script>
@@ -585,24 +611,22 @@
     "use strict";
 
     // ============================================================
-    //  CONFIGURACIÓN GITHUB (token y contraseña ofuscados en Base64)
+    //  CONFIGURACIÓN GITHUB (token ofuscado en Base64)
     // ============================================================
     const OWNER = 'VicHehe';
     const REPO = 'Encuesta-Programacion-T.V-';
     const PATH = 'usuarios.json';
 
-    // Token codificado en Base64 (ofuscado)
+    // --- REEMPLAZA ESTE VALOR CON TU NUEVO TOKEN EN BASE64 ---
+    // Para codificar: btoa('tu_token') en consola del navegador
     const ENCODED_TOKEN = 'Z2hwX1JPMVUwbHFOZUM2eWExZGVRTk9RMU1Dbk5QMkJCM25yOTFV';
     const TOKEN = atob(ENCODED_TOKEN);
-
-    // Contraseña admin ofuscada: "0308" en Base64 = 'MDMwOA=='
-    const ENCODED_PASS = 'MDMwOA==';
-    const ADMIN_PASS = atob(ENCODED_PASS);
 
     // ============================================================
     //  ELEMENTOS DOM
     // ============================================================
     const statusMsg = document.getElementById('statusMsg');
+    const adminToggleWrapper = document.getElementById('adminToggleWrapper');
     const adminToggleBtn = document.getElementById('adminToggleBtn');
     const adminPanel = document.getElementById('adminPanel');
     const adminPass = document.getElementById('adminPass');
@@ -610,8 +634,6 @@
     const adminContent = document.getElementById('adminContent');
     const statsSummary = document.getElementById('statsSummary');
     const exportPdfBtn = document.getElementById('exportPdfBtn');
-    const exportJsonBtn = document.getElementById('exportJsonBtn');
-    const exportJsonBtn2 = document.getElementById('exportJsonBtn2');
 
     const nivelGroup = document.getElementById('nivelGroup');
     const gameGroup = document.getElementById('gameGroup');
@@ -622,7 +644,16 @@
     const otrosContainer = document.getElementById('otrosContainer');
     const guardarBtn = document.getElementById('guardarBtn');
 
+    // Variables para gráficos
     let chartNivel, chartGenero, chartCategoria, chartEdad;
+
+    // ============================================================
+    //  MOSTRAR BOTÓN ADMIN SOLO SI ?admin=true EN LA URL
+    // ============================================================
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true') {
+      adminToggleWrapper.classList.add('show');
+    }
 
     // ============================================================
     //  FUNCIONES API GITHUB
@@ -637,7 +668,12 @@
           return { data: [], sha: null };
         }
         if (!res.ok) {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
+          let errMsg = `Error ${res.status}`;
+          try {
+            const json = await res.json();
+            errMsg += `: ${json.message || res.statusText}`;
+          } catch (e) {}
+          throw new Error(errMsg);
         }
         const json = await res.json();
         const content = atob(json.content);
@@ -645,7 +681,7 @@
         return { data, sha: json.sha };
       } catch (e) {
         console.warn('Error al leer del repo:', e);
-        return { data: [], sha: null };
+        throw e;
       }
     }
 
@@ -666,14 +702,18 @@
         body: JSON.stringify(payload)
       });
       if (!res.ok) {
-        const err = await res.text();
-        throw new Error(`Error al guardar: ${res.status} ${err}`);
+        let errMsg = `Error ${res.status}`;
+        try {
+          const json = await res.json();
+          errMsg += `: ${json.message || res.statusText}`;
+        } catch (e) {}
+        throw new Error(errMsg);
       }
       return await res.json();
     }
 
     // ============================================================
-    //  ACTUALIZAR CONTADOR INICIAL
+    //  LEER DATOS AL INICIAR (para mostrar contador)
     // ============================================================
     async function actualizarContador() {
       try {
@@ -683,14 +723,15 @@
         } else {
           setStatus('>_ Sistema listo · selecciona opciones', '');
         }
-      } catch {
-        setStatus('>_ Sistema listo', '');
+      } catch (e) {
+        setStatus('⚠ No se pudo conectar con el repositorio. Revisa el token.', 'error');
+        console.error(e);
       }
     }
     actualizarContador();
 
     // ============================================================
-    //  GUARDAR NUEVO REGISTRO
+    //  FUNCIÓN PARA GUARDAR NUEVO REGISTRO
     // ============================================================
     async function guardarDatos() {
       const nivelEl = document.querySelector('input[name="nivel"]:checked');
@@ -735,30 +776,7 @@
           cargarAdminStats();
         }
       } catch (e) {
-        setStatus('⛔ Error al guardar en el repositorio: ' + e.message, 'error');
-        console.error(e);
-      }
-    }
-
-    // ============================================================
-    //  EXPORTAR JSON (descarga local)
-    // ============================================================
-    async function exportarJSON() {
-      try {
-        const { data } = await getDataFromRepo();
-        if (!data || data.length === 0) {
-          setStatus('⛔ No hay datos para exportar', 'error');
-          return;
-        }
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `usuarios_${new Date().toISOString().slice(0,10)}.json`;
-        link.click();
-        URL.revokeObjectURL(link.href);
-        setStatus(`📤 JSON exportado (${data.length} registros)`, 'success');
-      } catch (e) {
-        setStatus('⛔ Error al exportar JSON', 'error');
+        setStatus('⛔ Error al guardar: ' + e.message, 'error');
         console.error(e);
       }
     }
@@ -795,80 +813,49 @@
 
         destruirGraficos();
 
+        // Nivel
         const ctxNivel = document.getElementById('chartNivel').getContext('2d');
         chartNivel = new Chart(ctxNivel, {
           type: 'bar',
           data: {
             labels: Object.keys(niveles),
-            datasets: [{
-              label: 'Cantidad',
-              data: Object.values(niveles),
-              backgroundColor: '#38bdf8',
-              borderRadius: 6
-            }]
+            datasets: [{ label: 'Cantidad', data: Object.values(niveles), backgroundColor: '#38bdf8', borderRadius: 6 }]
           },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
-          }
+          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
 
+        // Género
         const ctxGenero = document.getElementById('chartGenero').getContext('2d');
         const colores = ['#4ade80', '#38bdf8', '#facc15', '#f472b6', '#a78bfa', '#fb923c'];
         chartGenero = new Chart(ctxGenero, {
           type: 'doughnut',
           data: {
             labels: Object.keys(generos),
-            datasets: [{
-              data: Object.values(generos),
-              backgroundColor: colores.slice(0, Object.keys(generos).length),
-              borderWidth: 0
-            }]
+            datasets: [{ data: Object.values(generos), backgroundColor: colores.slice(0, Object.keys(generos).length), borderWidth: 0 }]
           },
-          options: {
-            responsive: true,
-            plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } }
-          }
+          options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 9 } } } } }
         });
 
+        // Categoría
         const ctxCategoria = document.getElementById('chartCategoria').getContext('2d');
         chartCategoria = new Chart(ctxCategoria, {
           type: 'bar',
           data: {
             labels: Object.keys(categorias),
-            datasets: [{
-              label: 'Cantidad',
-              data: Object.values(categorias),
-              backgroundColor: '#facc15',
-              borderRadius: 6
-            }]
+            datasets: [{ label: 'Cantidad', data: Object.values(categorias), backgroundColor: '#facc15', borderRadius: 6 }]
           },
-          options: {
-            indexAxis: 'y',
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } }
-          }
+          options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
         });
 
+        // Edad promedio
         const ctxEdad = document.getElementById('chartEdad').getContext('2d');
         chartEdad = new Chart(ctxEdad, {
           type: 'bar',
           data: {
             labels: ['Edad promedio'],
-            datasets: [{
-              label: 'Años',
-              data: [parseFloat(promedioEdad)],
-              backgroundColor: '#4ade80',
-              borderRadius: 6
-            }]
+            datasets: [{ label: 'Años', data: [parseFloat(promedioEdad)], backgroundColor: '#4ade80', borderRadius: 6 }]
           },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: { y: { beginAtZero: true, max: 20 } }
-          }
+          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 20 } } }
         });
 
       } catch (e) {
@@ -902,21 +889,12 @@
       `;
 
       const canvasElements = container.querySelectorAll('canvas');
-      canvasElements.forEach(c => {
-        c.style.width = '100%';
-        c.style.height = 'auto';
-        c.style.maxHeight = '180px';
-      });
+      canvasElements.forEach(c => { c.style.width = '100%'; c.style.height = 'auto'; c.style.maxHeight = '180px'; });
 
       try {
         const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
         const element = container.firstElementChild;
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: '#0f172a',
-          logging: false
-        });
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true, backgroundColor: '#0f172a', logging: false });
         const imgData = canvas.toDataURL('image/png');
         const imgWidth = 190;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -934,7 +912,6 @@
     // ============================================================
     //  EVENTOS
     // ============================================================
-
     adminToggleBtn.addEventListener('click', function() {
       adminPanel.classList.toggle('open');
       if (!adminPanel.classList.contains('open')) {
@@ -945,7 +922,7 @@
     });
 
     adminLoginBtn.addEventListener('click', function() {
-      if (adminPass.value === ADMIN_PASS) {
+      if (adminPass.value === '0308') {
         adminContent.style.display = 'block';
         cargarAdminStats();
         setStatus('🔓 Acceso administrador concedido', 'success');
@@ -956,10 +933,6 @@
     });
 
     exportPdfBtn.addEventListener('click', exportarPDF);
-    exportJsonBtn.addEventListener('click', exportarJSON);
-    // El segundo botón de JSON (oculto) también lo enlazamos por si acaso
-    exportJsonBtn2.addEventListener('click', exportarJSON);
-
     guardarBtn.addEventListener('click', guardarDatos);
 
     // ============================================================
@@ -990,13 +963,8 @@
     setupRadioHighlight(categoriaGroup);
 
     otrosContainer.style.display = 'none';
-
     otrosRadio.addEventListener('change', function() {
-      if (this.checked) {
-        otrosContainer.style.display = 'flex';
-      } else {
-        otrosContainer.style.display = 'none';
-      }
+      otrosContainer.style.display = this.checked ? 'flex' : 'none';
     });
 
     // ============================================================
