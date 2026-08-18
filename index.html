@@ -19,12 +19,29 @@
       background: linear-gradient(145deg, #0b1120 0%, #111827 100%);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       font-family: 'Inter', sans-serif;
       padding: 1.5rem;
       color: #e2e8f0;
     }
+    /* ===== LOGO FUERA DEL CUADRO ===== */
+    .logo-externo {
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: center;
+    }
+    .logo-externo img {
+      width: 100%;
+      height: auto;
+      display: block;
+      /* SIN contorno: sin border-radius, sin box-shadow */
+    }
+
+    /* ===== MAIN CONTAINER (CUADRO DE VOTACIÓN) ===== */
     .main-container {
       max-width: 820px;
       width: 100%;
@@ -35,34 +52,13 @@
       box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.06);
     }
-    .header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
+
+    /* Título dentro del cuadro (primera cosa) */
+    .title-group {
+      text-align: center;
       margin-bottom: 2rem;
       padding-bottom: 1.2rem;
       border-bottom: 1px solid rgba(255,255,255,0.06);
-      text-align: center;
-    }
-    /* LOGO GRANDE, FUERA DE CUADRADO, OCUPA TODO EL ANCHO */
-    .logo-container {
-      width: 100%;
-      max-width: 500px;
-      height: auto;
-      aspect-ratio: 16 / 9;
-      flex-shrink: 0;
-      overflow: hidden;
-      border-radius: 16px;
-      margin-bottom: 0.8rem;
-      box-shadow: 0 0 30px rgba(56,189,248,0.25);
-    }
-    .logo-container img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      border-radius: 16px;
     }
     .title-group h1 {
       font-size: 1.8rem;
@@ -405,8 +401,7 @@
     @media (max-width: 640px) {
       .main-container { padding: 1.2rem; }
       .title-group h1 { font-size: 1.3rem; }
-      .header { gap: 0.2rem; }
-      .logo-container { max-width: 100%; }
+      .logo-externo { max-width: 100%; }
       .opt-item { font-size: 0.6rem; padding: 0.2rem 0.8rem 0.2rem 0.6rem; }
       .btn { font-size: 0.6rem; padding: 0.4rem 1rem; }
       .admin-panel input[type="password"] { width: 120px; }
@@ -417,9 +412,15 @@
 </head>
 <body>
 
+<!-- ===== LOGO FUERA DEL CUADRO (sin contorno) ===== -->
+<div class="logo-externo">
+  <img src="LOGO.png" alt="Logo" onerror="this.src='https://via.placeholder.com/800x450/1e293b/38bdf8?text=LOGO+GRANDE'" />
+</div>
+
+<!-- ===== CUADRO DE VOTACIÓN ===== -->
 <div class="main-container" id="app">
 
-  <!-- PANEL ADMIN (se abre con el atajo 03082008, sin segunda contraseña) -->
+  <!-- PANEL ADMIN (se abre con el atajo 03082008) -->
   <div class="admin-panel" id="adminPanel">
     <div id="adminContent">
       <div class="stats-summary" id="statsSummary"></div>
@@ -433,16 +434,11 @@
     </div>
   </div>
 
-  <!-- HEADER: Logo GRANDE arriba, fuera del cuadrado, ocupando ancho -->
-  <div class="header">
-    <div class="logo-container">
-      <img src="LOGO.png" alt="Logo" onerror="this.src='https://via.placeholder.com/800x450/1e293b/38bdf8?text=LOGO+GRANDE'" />
-    </div>
-    <div class="title-group">
-      <h1>Torneo Gamer</h1>
-      <div class="sub">A Beneficio De La</div>
-      <div class="sub">Especialidad De Programación</div>
-    </div>
+  <!-- TÍTULO (primera cosa dentro del cuadro) -->
+  <div class="title-group">
+    <h1>Torneo Gamer</h1>
+    <div class="sub">A Beneficio De La</div>
+    <div class="sub">Especialidad De Programación</div>
   </div>
 
   <!-- FORMULARIO + MENSAJE DE AGRADECIMIENTO -->
