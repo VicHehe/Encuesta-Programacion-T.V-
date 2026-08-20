@@ -257,5 +257,12 @@
     "genero": "Combate",
     "categoria": "Parejas",
     "timestamp": "2026-08-20T19:33:20.832Z"
+  },
+  {
+    "nivel": "3 medio",
+    "edad": 16,
+    "genero": "otros: Ark survival evolved",
+    "categoria": "Individual",
+    "timestamp": "2026-08-20T19:33:56.307Z"
   }
 ]
