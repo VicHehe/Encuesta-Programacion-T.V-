@@ -54,5 +54,12 @@
     "genero": "Deportes",
     "categoria": "Individual",
     "timestamp": "2026-08-20T18:55:28.452Z"
+  },
+  {
+    "nivel": "3 medio",
+    "edad": 17,
+    "genero": "otros: Pokemon",
+    "categoria": "Individual",
+    "timestamp": "2026-08-20T18:57:36.305Z"
   }
 ]
