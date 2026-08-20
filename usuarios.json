@@ -306,5 +306,12 @@
     "genero": "otros: Fifa",
     "categoria": "Individual",
     "timestamp": "2026-08-20T19:48:03.136Z"
+  },
+  {
+    "nivel": "1 medio",
+    "edad": 15,
+    "genero": "Battle Royal",
+    "categoria": "Individual",
+    "timestamp": "2026-08-20T19:58:55.551Z"
   }
 ]
