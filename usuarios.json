@@ -229,5 +229,12 @@
     "genero": "Combate",
     "categoria": "Parejas",
     "timestamp": "2026-08-20T19:32:28.090Z"
+  },
+  {
+    "nivel": "3 medio",
+    "edad": 17,
+    "genero": "Combate",
+    "categoria": "Individual",
+    "timestamp": "2026-08-20T19:32:29.311Z"
   }
 ]
