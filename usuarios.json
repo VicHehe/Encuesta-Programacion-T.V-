@@ -215,5 +215,12 @@
     "genero": "Combate",
     "categoria": "Parejas",
     "timestamp": "2026-08-20T19:32:16.684Z"
+  },
+  {
+    "nivel": "3 medio",
+    "edad": 16,
+    "genero": "Battle Royal",
+    "categoria": "Grupos",
+    "timestamp": "2026-08-20T19:32:24.089Z"
   }
 ]
