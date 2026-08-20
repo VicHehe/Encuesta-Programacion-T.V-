@@ -341,5 +341,12 @@
     "genero": "Combate",
     "categoria": "Parejas",
     "timestamp": "2026-08-20T21:07:31.918Z"
+  },
+  {
+    "nivel": "1 medio",
+    "edad": 16,
+    "genero": "Carreras",
+    "categoria": "Parejas",
+    "timestamp": "2026-08-20T21:17:13.738Z"
   }
 ]
