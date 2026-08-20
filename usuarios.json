@@ -292,5 +292,12 @@
     "genero": "Moba",
     "categoria": "Grupos",
     "timestamp": "2026-08-20T19:40:14.994Z"
+  },
+  {
+    "nivel": "1 medio",
+    "edad": 14,
+    "genero": "Battle Royal",
+    "categoria": "Individual",
+    "timestamp": "2026-08-20T19:45:25.832Z"
   }
 ]
