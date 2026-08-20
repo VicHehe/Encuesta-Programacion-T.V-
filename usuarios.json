@@ -61,5 +61,12 @@
     "genero": "otros: Pokemon",
     "categoria": "Individual",
     "timestamp": "2026-08-20T18:57:36.305Z"
+  },
+  {
+    "nivel": "2 medio",
+    "edad": 16,
+    "genero": "Battle Royal",
+    "categoria": "Parejas",
+    "timestamp": "2026-08-20T18:58:16.555Z"
   }
 ]
