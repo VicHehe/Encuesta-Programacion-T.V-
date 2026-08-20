@@ -96,5 +96,12 @@
     "genero": "Deportes",
     "categoria": "Individual",
     "timestamp": "2026-08-20T19:00:44.468Z"
+  },
+  {
+    "nivel": "2 medio",
+    "edad": 17,
+    "genero": "Carreras",
+    "categoria": "Individual",
+    "timestamp": "2026-08-20T19:01:07.075Z"
   }
 ]
