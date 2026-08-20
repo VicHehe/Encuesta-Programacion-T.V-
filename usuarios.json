@@ -152,5 +152,12 @@
     "genero": "Deportes",
     "categoria": "Individual",
     "timestamp": "2026-08-20T19:12:15.281Z"
+  },
+  {
+    "nivel": "2 medio",
+    "edad": 15,
+    "genero": "otros: Minecraft",
+    "categoria": "Parejas",
+    "timestamp": "2026-08-20T19:16:56.420Z"
   }
 ]
