@@ -439,5 +439,12 @@
     "genero": "Carreras",
     "categoria": "Individual",
     "timestamp": "2026-08-21T15:07:15.458Z"
+  },
+  {
+    "nivel": "1 medio",
+    "edad": 15,
+    "genero": "otros: Brawl stars",
+    "categoria": "Grupos",
+    "timestamp": "2026-08-21T19:49:18.668Z"
   }
 ]
