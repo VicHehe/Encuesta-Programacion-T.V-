@@ -383,5 +383,12 @@
     "genero": "Carreras",
     "categoria": "Individual",
     "timestamp": "2026-08-21T13:39:23.472Z"
+  },
+  {
+    "nivel": "3 medio",
+    "edad": 16,
+    "genero": "Battle Royal",
+    "categoria": "Grupos",
+    "timestamp": "2026-08-21T14:54:55.193Z"
   }
 ]
