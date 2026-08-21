@@ -432,5 +432,12 @@
     "genero": "Battle Royal",
     "categoria": "Grupos",
     "timestamp": "2026-08-21T15:06:29.700Z"
+  },
+  {
+    "nivel": "1 medio",
+    "edad": 15,
+    "genero": "Carreras",
+    "categoria": "Individual",
+    "timestamp": "2026-08-21T15:07:15.458Z"
   }
 ]
