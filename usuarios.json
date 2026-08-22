@@ -453,5 +453,12 @@
     "genero": "Battle Royal",
     "categoria": "Parejas",
     "timestamp": "2026-08-21T21:22:13.630Z"
+  },
+  {
+    "nivel": "3 medio",
+    "edad": 16,
+    "genero": "Carreras",
+    "categoria": "Parejas",
+    "timestamp": "2026-08-22T23:25:11.647Z"
   }
 ]
