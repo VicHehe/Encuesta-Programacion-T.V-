@@ -474,5 +474,12 @@
     "genero": "Deportes",
     "categoria": "Individual",
     "timestamp": "2026-08-24T17:07:43.799Z"
+  },
+  {
+    "nivel": "4 medio",
+    "edad": 24,
+    "genero": "otros: Puzzle, trivias y baile",
+    "categoria": "Individual",
+    "timestamp": "2026-08-24T17:52:37.049Z"
   }
 ]
