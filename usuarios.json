@@ -495,5 +495,12 @@
     "genero": "Combate",
     "categoria": "Individual",
     "timestamp": "2026-08-25T16:55:20.576Z"
+  },
+  {
+    "nivel": "4 medio",
+    "edad": 17,
+    "genero": "Estrategia",
+    "categoria": "Individual",
+    "timestamp": "2026-08-25T22:15:31.950Z"
   }
 ]
